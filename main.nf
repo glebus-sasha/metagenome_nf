@@ -27,7 +27,9 @@ input_fastqs = params.reads ? Channel.fromFilePairs("${params.reads}/*[rR]{1,2}*
 workflow { 
     QCONTROL(input_fastqs)
     TRIM(input_fastqs)
-    REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect())
+//    KRAKEN2(TRIM.trimmed_reads, params.database)
+//    BRACKEN(KRAKEN2.out.result, params.database)
+//    REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), KRAKEN2.out.report.collect(), BRACKEN.out.txt.collect())
 
     // Make the pipeline reports directory if it needs
     if ( params.reports ) {
