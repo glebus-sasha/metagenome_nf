@@ -1,0 +1,41 @@
+#!/usr/bin/env nextflow
+// Include processes
+include { QCONTROL }            from './processes/qcontrol.nf'
+include { TRIM }                from './processes/trim.nf'
+include { REPORT }              from './processes/report.nf'
+
+// Logging pipeline information
+log.info """\
+\033[0;36m  ==========================================  \033[0m
+\033[0;34m         M E T A G E N O M E                  \033[0m
+\033[0;36m  ==========================================  \033[0m
+
+    reads:      ${params.reads}
+    outdir:     ${params.outdir}
+    """
+    .stripIndent(true)
+
+// Make the results directory if it needs
+def result_dir = new File("${params.outdir}")
+result_dir.mkdirs()
+
+// Define the input channel for FASTQ files, if provided
+input_fastqs = params.reads ? Channel.fromFilePairs("${params.reads}/*[rR]{1,2}*.*{fastq,fq}*", checkIfExists: true) : null
+
+
+// Define the workflow
+workflow { 
+    QCONTROL(input_fastqs)
+    TRIM(input_fastqs)
+    REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect())
+
+    // Make the pipeline reports directory if it needs
+    if ( params.reports ) {
+        def pipeline_report_dir = new File("${params.outdir}/pipeline_info/")
+        pipeline_report_dir.mkdirs()
+    }
+}
+
+
+
+
