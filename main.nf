@@ -28,7 +28,7 @@ kraken2_db = params.kraken2_db ? Channel.fromPath("${params.kraken2_db}").collec
 workflow { 
     QCONTROL(input_fastqs)
     TRIM(input_fastqs)
-    KRAKEN2(TRIM.trimmed_reads, kraken2_db)
+    KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
     BRACKEN(KRAKEN2.out.result, kraken2_db)
     REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), KRAKEN2.out.report.collect(), BRACKEN.out.txt.collect())
 
