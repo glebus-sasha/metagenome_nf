@@ -2,6 +2,8 @@
 // Include processes
 include { QCONTROL }            from './processes/qcontrol.nf'
 include { TRIM }                from './processes/trim.nf'
+include { KRAKEN2 }              from './processes/kraken2.nf'
+include { BRACKEN }              from './processes/bracken.nf'
 include { REPORT }              from './processes/report.nf'
 
 // Logging pipeline information
