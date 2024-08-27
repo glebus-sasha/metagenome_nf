@@ -18,11 +18,18 @@ process CHECKM {
     
     script:
     """
+    # Assess bin quality with multithreading and create a report
+    checkm lineage_wf \
+        -x fa \
+        -t ${task.cpus} \
+        ${bins} \
+        ${sid}
+
     # Generate a quality assessment report
     checkm qa \
         -o 2 \
         -t ${task.cpus} \
-        ${bins} \
+        ${sid}/lineage.ms \
         ${sid}/qa_report
 
     # Create GC histogram and delta-GC plot
@@ -81,11 +88,5 @@ process CHECKM {
         ${bins} \
         ${sid}/gc_bias_plot
     
-    # Assess bin quality with multithreading and create a report
-    checkm lineage_wf \
-        -x fa \
-        -t ${task.cpus} \
-        ${bins} \
-        ${sid}
     """
 }
