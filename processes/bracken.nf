@@ -12,7 +12,7 @@ process BRACKEN {
 
     
     output:
-    path "{sid}_bracken_result.txt", emit: txt
+    path "${sid}_bracken_result.txt", emit: txt
     
     script:
     """
