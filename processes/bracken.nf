@@ -7,7 +7,7 @@ process BRACKEN {
 //    errorStrategy 'ignore'
     
     input:
-    path kraken_report
+    tuple val(sid) path(kraken_report)
     path database
 
     
@@ -16,6 +16,6 @@ process BRACKEN {
     
     script:
     """
-    bracken -d $database -i $kraken_report -o {sid}_bracken_result.txt -r 100 -l S
+    bracken -d $database -i $kraken_report -o ${sid}_bracken_result.txt -r 100 -l S
     """
 }

@@ -11,8 +11,8 @@ process KRAKEN2 {
     path database
     
     output:
-    path "${sid}_kraken2_result.txt", emit: result
-    path "${sid}_kraken2_report.txt", emit: report
+    tuple val(sid), path("${sid}_kraken2_result.txt"), emit: result
+    tuple val(sid), path("${sid}_kraken2_report.txt"), emit: report
     
     script:
     """
