@@ -5,6 +5,7 @@ process CHECKM {
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/CHECKM"
 //	  debug true
     errorStrategy 'ignore'
+    cpus params.cpus
 
     input:
     val sid
@@ -17,6 +18,9 @@ process CHECKM {
     
     script:
     """
-    checkm lineage_wf -x fa ${bins} .
+    checkm lineage_wf \
+    -x fa \
+    -t ${task.cpus} \
+    ${bins} .
     """
 }
