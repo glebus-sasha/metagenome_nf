@@ -13,7 +13,7 @@ include { REPORT }              from './processes/report.nf'
 // Logging pipeline information
 log.info """\
 \033[0;36m  ==========================================  \033[0m
-\033[0;34m         M E T A G E N O M E                  \033[0m
+\033[0;34m              M E T A G E N O M E             \033[0m
 \033[0;36m  ==========================================  \033[0m
 
     reads:      ${params.reads}

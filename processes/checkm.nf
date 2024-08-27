@@ -1,7 +1,7 @@
 // Define the `CHECKM` process that performs assessing the quality and integrity of bins
 process CHECKM {
     container = 'staphb/checkm:latest'
-    tag ""
+    tag "${sid}"
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/CHECKM"
 //	  debug true
     errorStrategy 'ignore'
