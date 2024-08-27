@@ -1,10 +1,11 @@
 // Define the `ALIGN` process that aligns reads to the reference genome
 process ALIGN {
     container = 'glebusasha/bwa_samtools'
-    tag "$reference ${sid} $bedfile"
+    tag "$reference ${sid}"
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/ALIGN"
 //	  debug true
     errorStrategy 'ignore'
+    cpus params.cpus
 
     input:
     tuple val(sid), path(reads1), path(reads2)
