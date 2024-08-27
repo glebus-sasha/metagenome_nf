@@ -2,8 +2,9 @@
 // Include processes
 include { QCONTROL }            from './processes/qcontrol.nf'
 include { TRIM }                from './processes/trim.nf'
-include { KRAKEN2 }              from './processes/kraken2.nf'
-include { BRACKEN }              from './processes/bracken.nf'
+include { KRAKEN2 }             from './processes/kraken2.nf'
+include { BRACKEN }             from './processes/bracken.nf'
+include { METASPADES }          from './processes/metaspades.nf'
 include { REPORT }              from './processes/report.nf'
 
 // Logging pipeline information
@@ -31,8 +32,9 @@ workflow {
     QCONTROL(input_fastqs)
     TRIM(input_fastqs)
     KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
-    BRACKEN(KRAKEN2.out.result, kraken2_db)
-    REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), KRAKEN2.out.report.collect(), BRACKEN.out.txt.collect())
+//    BRACKEN(KRAKEN2.out.result, kraken2_db)
+    METASPADES(TRIM.out.trimmed_reads)
+//    REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), KRAKEN2.out.report.collect(), BRACKEN.out.txt.collect())
 
     // Make the pipeline reports directory if it needs
     if ( params.reports ) {
