@@ -12,8 +12,8 @@ process METASPADES {
     output:
     val "${sid}",                                                   emit: sid
     path "${sid}_metaspades",                                       emit: metaspades
-    path "${sid}_metaspades/contigs.fasta",                        emit: contigs
-    path "${sid}_metaspades/scaffolds.fasta",   emit: scaffolds
+    path "${sid}_metaspades/contigs.fasta",                         emit: contigs
+    path "${sid}_metaspades/scaffolds.fasta",                       emit: scaffolds
     
     script:
     """
@@ -21,7 +21,8 @@ process METASPADES {
         --meta \
         -1 ${reads1} \
         -2 ${reads2} \
-        -t 95 \
+        -t ${param.cpus} \
+        -m ${param.memory} \
         -o ${sid}_metaspades
     """
 }

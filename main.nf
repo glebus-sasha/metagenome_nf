@@ -6,6 +6,7 @@ include { KRAKEN2 }             from './processes/kraken2.nf'
 include { BRACKEN }             from './processes/bracken.nf'
 include { METASPADES }          from './processes/metaspades.nf'
 include { ALIGN }               from './processes/align.nf'
+include { METABAT }             from './processes/metabat.nf'
 include { REPORT }              from './processes/report.nf'
 
 // Logging pipeline information
@@ -16,6 +17,7 @@ log.info """\
 
     reads:      ${params.reads}
     outdir:     ${params.outdir}
+    workDir:    ${workflow.workDir}
     """
     .stripIndent(true)
 
@@ -36,6 +38,8 @@ workflow {
     BRACKEN(KRAKEN2.out.sid, KRAKEN2.out.report, kraken2_db)
     METASPADES(TRIM.out.trimmed_reads)
     ALIGN(TRIM.out.trimmed_reads, METASPADES.out.contigs)
+    METABAT(ALIGN.out.sid, METASPADES.out.contigs, ALIGN.out.bam)
+    CHECKM(METABAT.out.sid, METABAT.out.bins)
     REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), KRAKEN2.out.report.collect(), BRACKEN.out.txt.collect())
 
     // Make the pipeline reports directory if it needs

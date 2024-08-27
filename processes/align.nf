@@ -11,7 +11,8 @@ process ALIGN {
     path reference
 
     output:
-    tuple val(sid), path("*.sorted.bam"), emit: bam
+    val sid, emit: sid
+    path "*.sorted.bam", emit: bam
     
     script:
     """
