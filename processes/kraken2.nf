@@ -27,6 +27,7 @@ process KRAKEN2 {
     --paired \
     --minimum-base-quality 20 \
     --gzip-compressed \
+    --threads 95\
     ${reads1} ${reads2}
     """
 }
