@@ -20,6 +20,6 @@ process METABAT {
     script:
     """
     runMetaBat.sh -t ${task.cpus} ${contigs} ${bam} 
-    mv contig* ${sid}_bins
+    mv contigs.fasta.metabat* ${sid}_bins
     """
 }
