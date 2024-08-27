@@ -7,7 +7,7 @@ process BRACKEN {
 //    errorStrategy 'ignore'
     
     input:
-    tuple val(sid) path(kraken_report)
+    tuple val(sid), path(kraken_report)
     path database
 
     
