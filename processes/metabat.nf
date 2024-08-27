@@ -5,6 +5,7 @@ process METABAT {
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/METABAT"
 //	  debug true
     errorStrategy 'ignore'
+    cpus params.cpus
 
     input:
     val sid
@@ -18,6 +19,6 @@ process METABAT {
     
     script:
     """
-    metabat2 -i ${contigs} -a ${bam} -o "${sid}_bins"
+    runMetaBat.sh ${contigs} ${bam} -t ${task.cpus}
     """
 }
