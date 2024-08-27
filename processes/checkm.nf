@@ -13,7 +13,7 @@ process CHECKM {
 
     output:
     val "${sid}", emit: sid
-    path "*", emit: reports
+    path "${sid}", emit: reports
 
     
     script:
@@ -21,6 +21,7 @@ process CHECKM {
     checkm lineage_wf \
     -x fa \
     -t ${task.cpus} \
-    ${bins} .
+    ${bins} \
+    ${sid}
     """
 }
