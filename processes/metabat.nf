@@ -18,6 +18,6 @@ process METABAT {
     
     script:
     """
-    metabat2 -i ${contigs} -a ${bam} -o "${sid}_bins/bin"
+    metabat2 -i ${contigs} -a ${bam} -o "${sid}_bins"
     """
 }
