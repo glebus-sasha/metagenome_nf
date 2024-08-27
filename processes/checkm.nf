@@ -37,14 +37,17 @@ process CHECKM {
         -x fa \
         -t ${task.cpus} \
         ${bins} \
-        ${sid}/gc_plot
+        ${sid}/gc_plot \
+        95
 
     # Create coding density (CD) histogram and delta-CD plot
     checkm coding_plot \
         -x fa \
         -t ${task.cpus} \
+        ${sid}/qa_report \
         ${bins} \
-        ${sid}/coding_plot
+        ${sid}/coding_plot \
+        95
 
     # Create tetranucleotide distance (TD) histogram and delta-TD plot
     checkm tetra_plot \
@@ -57,6 +60,7 @@ process CHECKM {
     checkm dist_plot \
         -x fa \
         -t ${task.cpus} \
+        ${sid}/qa_report \
         ${bins} \
         ${sid}/dist_plot
 
