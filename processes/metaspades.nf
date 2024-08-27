@@ -10,7 +10,10 @@ process METASPADES {
     tuple val(sid), path(reads1), path(reads2)
     
     output:
-    path "${sid}_metaspades", emit: metaspades
+    val "${sid}",                               emit: sid
+    path "${sid}_metaspades",                   emit: metaspades
+    path "${sid}_metaspades/contigs.fasta",     emit: contigs
+    path "${sid}_metaspades/scaffolds.fasta",   emit: scaffolds
     
     script:
     """
