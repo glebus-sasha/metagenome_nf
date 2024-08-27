@@ -14,11 +14,11 @@ process METABAT {
 
     output:
     val "${sid}", emit: sid
-    path "${sid}_bins/*", emit: bins
+    path "${sid}_bins", emit: bins
 
     
     script:
     """
-    runMetaBat.sh -t ${task.cpus} ${contigs} ${bam} 
+    runMetaBat.sh -t ${task.cpus} -o ${sid}_bins ${contigs} ${bam} 
     """
 }
