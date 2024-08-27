@@ -18,58 +18,73 @@ process CHECKM {
     
     script:
     """
-    # Оценка качества бинов и создание отчета
+    # Оценка качества бинов с мультитредингом и создание отчета
     checkm lineage_wf \
         -x fa \
         -t ${task.cpus} \
         ${bins} \
         ${sid}
 
+    # Получение отчета о качестве бинов
+    checkm qa \
+        -o 2 \
+        -t ${task.cpus} \
+        ${sid} \
+        ${sid}/qa_report
+
     # Создание гистограммы GC и delta-GC графика
     checkm gc_plot \
         -x fa \
+        -t ${task.cpus} \
         ${bins} \
         ${sid}/gc_plot
 
     # Создание гистограммы плотности кодирующих областей и delta-CD графика
     checkm coding_plot \
         -x fa \
+        -t ${task.cpus} \
         ${bins} \
         ${sid}/coding_plot
 
     # Создание гистограммы расстояния тетрануклеотидов и delta-TD графика
     checkm tetra_plot \
         -x fa \
+        -t ${task.cpus} \
         ${bins} \
         ${sid}/tetra_plot
 
     # Создание изображения с GC, CD и TD распределением
     checkm dist_plot \
         -x fa \
+        -t ${task.cpus} \
         ${bins} \
         ${sid}/dist_plot
 
     # Создание Nx-графиков
     checkm nx_plot \
         -x fa \
+        -t ${task.cpus} \
         ${bins} \
         ${sid}/nx_plot
 
     # Создание гистограммы длины последовательностей
     checkm len_hist \
         -x fa \
+        -t ${task.cpus} \
         ${bins} \
         ${sid}/len_hist
 
     # Построение положения маркерных генов на последовательностях
     checkm marker_plot \
         -x fa \
+        -t ${task.cpus} \
         ${bins} \
         ${sid}/marker_plot
 
     # Построение покрытия бинов в зависимости от GC-содержания
     checkm gc_bias_plot \
         -x fa \
+        -t ${task.cpus} \
         ${bins} \
         ${sid}/gc_bias_plot
     """
