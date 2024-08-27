@@ -19,9 +19,14 @@ process CHECKM {
     script:
     """
     checkm lineage_wf \
-    -x fa \
-    -t ${task.cpus} \
-    ${bins} \
-    ${sid}
+        -x fa \
+        -t ${task.cpus} \
+        ${bins} \
+        ${sid}
+    checkm bin_qa_plot \
+        -x fa \
+        -t ${task.cpus} \
+        ${bins} \
+        ${sid}
     """
 }
