@@ -19,6 +19,7 @@ process METABAT {
     
     script:
     """
-    runMetaBat.sh -t ${task.cpus} -o ${sid}_bins ${contigs} ${bam} 
+    runMetaBat.sh -t ${task.cpus} ${contigs} ${bam} 
+    mv contig* ${sid}_bins
     """
 }
