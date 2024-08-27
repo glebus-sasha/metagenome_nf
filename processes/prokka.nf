@@ -1,5 +1,5 @@
 // Define the `PROKKA` process that performs binning contingencies to isolate metagenomic assemblies
-process PROKKA
+process PROKKA {
     container = 'nanozoo/prokka:1.14.6--c99ff65'
     tag ""
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/PROKKA"
