@@ -24,7 +24,7 @@ process KRAKEN2 {
     --report ${sid}_kraken2_report.txt \
     --report-zero-counts \
     --use-names \
-    --memory-mapping \
+#    --memory-mapping \
     --paired \
     --minimum-base-quality 20 \
     --gzip-compressed \
