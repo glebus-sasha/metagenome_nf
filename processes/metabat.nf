@@ -19,6 +19,6 @@ process METABAT {
     
     script:
     """
-    runMetaBat.sh ${contigs} ${bam} -t ${task.cpus}
+    runMetaBat.sh ${contigs} ${bam}
     """
 }
