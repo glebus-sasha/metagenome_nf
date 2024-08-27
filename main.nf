@@ -7,6 +7,7 @@ include { BRACKEN }             from './processes/bracken.nf'
 include { METASPADES }          from './processes/metaspades.nf'
 include { ALIGN }               from './processes/align.nf'
 include { METABAT }             from './processes/metabat.nf'
+include { CHECKM }              from './processes/checkm.nf'
 include { REPORT }              from './processes/report.nf'
 
 // Logging pipeline information
