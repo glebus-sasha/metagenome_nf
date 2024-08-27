@@ -5,6 +5,7 @@ include { TRIM }                from './processes/trim.nf'
 include { KRAKEN2 }             from './processes/kraken2.nf'
 include { BRACKEN }             from './processes/bracken.nf'
 include { METASPADES }          from './processes/metaspades.nf'
+include { ALIGN }               from './processes/align.nf'
 include { REPORT }              from './processes/report.nf'
 
 // Logging pipeline information
@@ -34,6 +35,7 @@ workflow {
     KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
     BRACKEN(KRAKEN2.out.sid, KRAKEN2.out.report, kraken2_db)
     METASPADES(TRIM.out.trimmed_reads)
+    ALIGN(TRIM.out.trimmed_reads, METASPADES.out.contigs)
     REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), KRAKEN2.out.report.collect(), BRACKEN.out.txt.collect())
 
     // Make the pipeline reports directory if it needs
