@@ -24,7 +24,7 @@ process METASPADES {
         -1 ${reads1} \
         -2 ${reads2} \
         -t ${task.cpus} \
-        -m ${task.memory} \
+        -m 800 \
         -o ${sid}_metaspades
     """
 }
