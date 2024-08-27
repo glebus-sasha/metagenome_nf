@@ -1,7 +1,7 @@
 // Define the `PROKKA` process that performs binning contingencies to isolate metagenomic assemblies
 process PROKKA {
     container = 'nanozoo/prokka:1.14.6--c99ff65'
-    tag ""
+    tag "${sid}"
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/PROKKA"
 //	  debug true
     errorStrategy 'ignore'
@@ -18,6 +18,6 @@ process PROKKA {
     
     script:
     """
-    metabat2 -i ${contigs} -a ${bam} -o "${sid}_bins/bin"
+    prokka --outdir bin1_annotation --prefix bin1 bins/bin.1.fa
     """
 }

@@ -19,7 +19,7 @@ process ALIGN {
         bwa index ${reference}
         bwa mem \
             -t ${task.cpus} ${reference} ${reads1} ${reads2} | \
-        samtools view -bh ${bed_option} | \
+        samtools view -bh | \
         samtools sort -o ${sid}.sorted.bam
 
     """
