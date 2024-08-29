@@ -89,7 +89,7 @@ nextflow run <your-username>/<your-repository> \
     -profile <docker/singularity> \
     --reads <path-to-reads-folder> \
     --kraken2_db <path-to-kraken2-database> \
-    --outdir results
+    --outdir <path-to-results-folder>
 ```
 
 ### Requirements
