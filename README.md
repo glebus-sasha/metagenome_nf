@@ -64,3 +64,52 @@ flowchart TB
     v22 --> v23
     v23 --> v24
 ```
+## Description
+
+This pipeline is implemented in Nextflow and includes several stages for metagenomic data analysis:
+
+- **QCONTROL (FastQC)**: Quality control of raw sequencing data using FastQC.
+- **TRIM (fastp)**: Trimming of reads to remove adapters and low-quality sequences using fastp.
+- **KRAKEN2 (Kraken2)**: Taxonomic classification of reads using Kraken2.
+- **BRACKEN (Bracken)**: Estimation of species abundance based on Kraken2 outputs using Bracken.
+- **METASPADES (metaSPAdes)**: Assembly of metagenomic sequences using metaSPAdes.
+- **ALIGN (Bowtie2)**: Alignment of reads to the assembled contigs using BWA MEM.
+- **METABAT (MetaBAT2)**: Binning of assembled contigs into metagenomic bins using MetaBAT2.
+- **CHECKM (CheckM)**: Quality assessment and visualization of metagenomic bins using CheckM.
+- **REPORT (MultiQC)**: Compilation of a comprehensive report including QC metrics, taxonomic classification, and assembly results.
+
+## Usage
+
+### Quick Start
+
+To quickly run the pipeline, use the following command:
+
+```bash
+nextflow run <your-username>/<your-repository> \
+    -profile <docker/singularity> \
+    --reads <path-to-reads-folder> \
+    --kraken2_db <path-to-kraken2-database> \
+    --outdir results
+```
+
+### Requirements
+
+- Nextflow (https://www.nextflow.io/docs/latest/install.html)
+- Docker (https://docs.docker.com/engine/install/) or
+- Singularity (https://github.com/sylabs/singularity/blob/main/INSTALL.md)
+
+### Running the Pipeline
+
+1. Install all the necessary dependencies such as Nextflow, Singularity.
+3. Clone this repository: `git clone https://github.com/glebus-sasha/octopus.git`
+4. Navigate to the pipeline directory: `cd octopus_nf`
+5. Edit the `nextflow.config` file to set the required parameters, if necessary.
+6. Run the pipeline, setting the required parameters, for example:
+
+```bash
+nextflow run main.nf
+```
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
