@@ -101,7 +101,7 @@ nextflow run <your-username>/<your-repository> \
 ### Running the Pipeline
 
 1. Install all the necessary dependencies such as Nextflow, Singularity.
-3. Clone this repository: `git clone https://github.com/glebus-sasha/octopus.git`
+3. Clone this repository: `git clone https://github.com/glebus-sasha/metagenome_nf.git`
 4. Navigate to the pipeline directory: `cd octopus_nf`
 5. Edit the `nextflow.config` file to set the required parameters, if necessary.
 6. Run the pipeline, setting the required parameters, for example:
