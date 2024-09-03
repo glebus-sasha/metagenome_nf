@@ -12,8 +12,15 @@ process QCONTROL{
     output:
     path "*.html", emit: html
     path "*.zip", emit: zip
-
+    
+    script:
     """
     fastqc $reads
+    """
+
+    stub:
+    """
+    touch ${sid}.html
+    touch ${sid}.zip
     """
 }

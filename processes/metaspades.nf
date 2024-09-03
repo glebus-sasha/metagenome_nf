@@ -27,4 +27,11 @@ process METASPADES {
         -m 800 \
         -o ${sid}_metaspades
     """
+
+    stub:
+    """
+    mkdir ${sid}_metaspades
+    touch ${sid}_metaspades/contigs.fasta
+    touch ${sid}_metaspades/scaffolds.fasta
+    """
 }

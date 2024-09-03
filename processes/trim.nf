@@ -27,4 +27,10 @@ process TRIM{
     --html ${sid}.fastp_stats.html \
     --json ${sid}.fastp_stats.json 
     """
+
+    stub:
+    """
+    touch ${sid}.fastp_stats.html
+    touch ${sid}.fastp_stats.json
+    """
 }

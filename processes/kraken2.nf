@@ -30,4 +30,10 @@ process KRAKEN2 {
     --threads 95 \
     ${reads1} ${reads2}
     """
+
+    stub:
+    """
+    touch ${sid}_kraken2_result.txt
+    touch ${sid}_kraken2_report.txt
+    """
 }

@@ -19,4 +19,9 @@ process REPORT {
     """
     multiqc $fastqc $fastp $flagstat $whatshap
     """
+
+    stub:
+    """
+    touch multiqc_report.html
+    """
 }

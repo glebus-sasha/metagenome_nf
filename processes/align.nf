@@ -24,4 +24,9 @@ process ALIGN {
         samtools sort -o ${sid}.sorted.bam
 
     """
+
+    stub:
+    """
+    touch ${sid}.sorted.bam
+    """
 }

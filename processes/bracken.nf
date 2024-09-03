@@ -19,4 +19,9 @@ process BRACKEN {
     """
     bracken -d $database -i $kraken_report -o ${sid}_bracken_result.txt -r 100 -l S
     """
+
+    stub:
+    """
+    touch ${sid}_bracken_result.txt
+    """
 }

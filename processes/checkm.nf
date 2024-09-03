@@ -25,4 +25,6 @@ process CHECKM {
         ${bins} \
         ${sid}    
     """
+
+${sid}.fastp_stats.html
 }

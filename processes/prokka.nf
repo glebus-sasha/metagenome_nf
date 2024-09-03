@@ -20,4 +20,9 @@ process PROKKA {
     """
     prokka --outdir bin1_annotation --prefix bin1 bins/bin.1.fa
     """
+
+    stub:
+    """
+
+    """
 }

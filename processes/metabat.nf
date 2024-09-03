@@ -22,4 +22,9 @@ process METABAT {
     runMetaBat.sh -t ${task.cpus} ${contigs} ${bam} 
     mv contigs.fasta.metabat* ${sid}_bins
     """
+
+    stub:
+    """
+    mkdir ${sid}_bins
+    """
 }
