@@ -10,7 +10,7 @@ process TRIM{
     tuple val(sid), path(reads)
 
     output:
-    tuple val(sid), path(fq_1_trimmed), path(fq_2_trimmed), emit: trimmed_reads
+    tuple val(sid), path("${sid}_R1.fastq.gz"), path("${sid}_R2.fastq.gz"), emit: trimmed_reads
     path '*.html', emit: html, optional: true
     path '*.json', emit: json, optional: true
 
