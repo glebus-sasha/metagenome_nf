@@ -26,5 +26,8 @@ process CHECKM {
         ${sid}    
     """
 
-${sid}.fastp_stats.html
+    stub:
+    """
+    mkdir ${sid}
+    """
 }
