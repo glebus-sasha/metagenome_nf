@@ -32,5 +32,7 @@ process TRIM{
     """
     touch ${sid}.fastp_stats.html
     touch ${sid}.fastp_stats.json
+    touch ${sid}_R1.fastq.gz
+    touch ${sid}_R2.fastq.gz
     """
 }
