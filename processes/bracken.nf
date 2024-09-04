@@ -15,7 +15,8 @@ process BRACKEN {
 
     
     output:
-    path "${sid}_bracken_result.txt", emit: txt
+    val "${sid}",                       emit: sid
+    path "${sid}_bracken_result.txt",   emit: txt
     
     script:
     """
