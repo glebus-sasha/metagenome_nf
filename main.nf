@@ -8,6 +8,7 @@ include { METASPADES }          from './processes/metaspades.nf'
 include { ALIGN }               from './processes/align.nf'
 include { METABAT }             from './processes/metabat.nf'
 include { CHECKM }              from './processes/checkm.nf'
+include { GTDBTK }              from './processes/gtdbtk.nf'
 include { REPORT }              from './processes/report.nf'
 
 // Logging pipeline information
@@ -41,6 +42,7 @@ workflow {
     ALIGN(TRIM.out.trimmed_reads, METASPADES.out.contigs)
     METABAT(ALIGN.out.sid, METASPADES.out.contigs, ALIGN.out.bam)
     CHECKM(METABAT.out.sid, METABAT.out.bins)
+    GTDBTK(METABAT.out.sid, METABAT.out.bins)
     REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), KRAKEN2.out.report.collect(), BRACKEN.out.txt.collect())
 
     // Make the pipeline reports directory if it needs
