@@ -1,4 +1,4 @@
-// Define the `GTDBTK ` process that performs taxonomy analysis
+// Define the `GTDBTK ` process that performs taxonomy classification
 process GTDBTK {
     container = 'nanozoo/gtdbtk:2.4.0--02c00d5'
     tag "${sid}"
@@ -16,7 +16,7 @@ process GTDBTK {
     
     script:
     """
-    gtdbtk classify_wf --genome_dir ${bins} --out_dir ${sid} --cpus ${task.cpus}
+    gtdbtk classify_wf --genome_dir ${bins} --out_dir ${sid} --cpus ${task.cpus} --skip_ani_screen
     """
 
     stub:

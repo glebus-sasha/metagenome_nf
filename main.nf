@@ -6,7 +6,7 @@ include { KRAKEN2 }             from './processes/kraken2.nf'
 include { BRACKEN }             from './processes/bracken.nf'
 include { METASPADES }          from './processes/metaspades.nf'
 include { ALIGN }               from './processes/align.nf'
-include { METABAT }             from './processes/metabat.nf'
+include { METABAT2 }             from './processes/metabat2.nf'
 include { CHECKM }              from './processes/checkm.nf'
 include { GTDBTK }              from './processes/gtdbtk.nf'
 include { REPORT }              from './processes/report.nf'
@@ -30,6 +30,7 @@ result_dir.mkdirs()
 // Define the input channel for FASTQ files, if provided
 input_fastqs = params.reads ? Channel.fromFilePairs("${params.reads}/*[rR]{1,2}*.*{fastq,fq}*", checkIfExists: true) : null
 
+// Define the input channel for Kraken2 data base, if provided
 kraken2_db = params.kraken2_db ? Channel.fromPath("${params.kraken2_db}").collect(): null
 
 // Define the workflow
@@ -40,9 +41,9 @@ workflow {
     BRACKEN(KRAKEN2.out.sid, KRAKEN2.out.report, kraken2_db)
     METASPADES(TRIM.out.trimmed_reads)
     ALIGN(TRIM.out.trimmed_reads, METASPADES.out.contigs)
-    METABAT(ALIGN.out.sid, METASPADES.out.contigs, ALIGN.out.bam)
-    CHECKM(METABAT.out.sid, METABAT.out.bins)
-    GTDBTK(METABAT.out.sid, METABAT.out.bins)
+    METABAT2(ALIGN.out.sid, METASPADES.out.contigs, ALIGN.out.bam)
+    CHECKM(METABAT2.out.sid, METABAT2.out.bins)
+    GTDBTK(METABAT2.out.sid, METABAT2.out.bins)
     REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), KRAKEN2.out.report.collect(), BRACKEN.out.txt.collect())
 
     // Make the pipeline reports directory if it needs

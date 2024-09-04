@@ -12,10 +12,10 @@ process METASPADES {
     tuple val(sid), path(reads1), path(reads2)
     
     output:
-    val "${sid}",                                                   emit: sid
-    path "${sid}_metaspades",                                       emit: metaspades
-    path "${sid}_metaspades/contigs.fasta",                         emit: contigs
-    path "${sid}_metaspades/scaffolds.fasta",                       emit: scaffolds
+    val "${sid}",                                        emit: sid
+    path "${sid}",                                       emit: metaspades
+    path "${sid}/contigs.fasta",                         emit: contigs
+    path "${sid}/scaffolds.fasta",                       emit: scaffolds
     
     script:
     """
@@ -25,13 +25,13 @@ process METASPADES {
         -2 ${reads2} \
         -t ${task.cpus} \
         -m 800 \
-        -o ${sid}_metaspades
+        -o ${sid}
     """
 
     stub:
     """
-    mkdir ${sid}_metaspades
-    touch ${sid}_metaspades/contigs.fasta
-    touch ${sid}_metaspades/scaffolds.fasta
+    mkdir ${sid}
+    touch ${sid}/contigs.fasta
+    touch ${sid}/scaffolds.fasta
     """
 }
