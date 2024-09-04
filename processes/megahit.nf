@@ -14,6 +14,7 @@ process MEGAHIT {
     output:
     val "${sid}",                                                   emit: sid
     path "${sid}",                                                  emit: megahit
+    path "${sid}/final.contigs.fa",                                 emit: contigs
     
     script:
     """
@@ -23,5 +24,6 @@ process MEGAHIT {
     stub:
     """
     mkdir ${sid}
+    touch ${sid}/final.contigs.fa
     """
 }
