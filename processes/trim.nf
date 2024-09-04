@@ -4,15 +4,17 @@ process TRIM{
     tag "${sid}"
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/TRIM"
 //	  debug true
-//    errorStrategy 'ignore'
+    errorStrategy 'ignore'
+    cpus params.cpus
+    memory params.memory
 
     input:
     tuple val(sid), path(reads)
 
     output:
-    tuple val(sid), path("${sid}_R1.fastq.gz"), path("${sid}_R2.fastq.gz"), emit: trimmed_reads
-    path '*.html', emit: html, optional: true
-    path '*.json', emit: json, optional: true
+    tuple val(sid), path("${sid}_R1.fastq.gz"), path("${sid}_R2.fastq.gz"),     emit: trimmed_reads
+    path '*.html',                                                              emit: html, optional: true
+    path '*.json',                                                              emit: json, optional: true
 
     script:
     fq_1_trimmed = sid + '_R1.fastq.gz'

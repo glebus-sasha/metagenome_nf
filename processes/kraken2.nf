@@ -4,16 +4,18 @@ process KRAKEN2 {
     tag "${sid}"
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/KRAKEN2"
 //	debug true
-//    errorStrategy 'ignore'
+    errorStrategy 'ignore'
+    cpus params.cpus
+    memory params.memory
     
     input:
     tuple val(sid), path(reads1), path(reads2)
     path database
     
     output:
-    val(sid), emit: sid
-    path("${sid}_kraken2_result.txt"), emit: result
-    path("${sid}_kraken2_report.txt"), emit: report
+    val(sid),                               emit: sid
+    path("${sid}_kraken2_result.txt"),      emit: result
+    path("${sid}_kraken2_report.txt"),      emit: report
     
     script:
     """

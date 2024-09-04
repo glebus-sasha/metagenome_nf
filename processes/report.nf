@@ -4,8 +4,10 @@ process REPORT {
     tag "$flagstat"
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/REPORT"
 //	  debug true
-//    errorStrategy 'ignore'
-	
+    errorStrategy 'ignore'
+    cpus params.cpus
+    memory params.memory
+    	
     input:
     path fastp
     path fastqc

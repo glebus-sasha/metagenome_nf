@@ -4,7 +4,7 @@ process METASPADES {
     tag "${sid}"
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/METASPADES"
 //	debug true
-//  errorStrategy 'ignore'
+    errorStrategy 'ignore'
     cpus params.cpus
     memory params.memory
     

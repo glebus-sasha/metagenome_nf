@@ -6,14 +6,15 @@ process CHECKM {
 //	  debug true
     errorStrategy 'ignore'
     cpus params.cpus
+    memory params.memory
 
     input:
     val sid
     path bins
 
     output:
-    val "${sid}", emit: sid
-    path "${sid}", emit: reports
+    val "${sid}",       emit: sid
+    path "${sid}",      emit: reports
 
     
     script:

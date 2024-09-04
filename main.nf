@@ -5,8 +5,9 @@ include { TRIM }                from './processes/trim.nf'
 include { KRAKEN2 }             from './processes/kraken2.nf'
 include { BRACKEN }             from './processes/bracken.nf'
 include { METASPADES }          from './processes/metaspades.nf'
+include { MEGAHIT }             from './processes/megahit.nf'
 include { ALIGN }               from './processes/align.nf'
-include { METABAT2 }             from './processes/metabat2.nf'
+include { METABAT2 }            from './processes/metabat2.nf'
 include { CHECKM }              from './processes/checkm.nf'
 include { GTDBTK }              from './processes/gtdbtk.nf'
 include { REPORT }              from './processes/report.nf'
@@ -39,7 +40,9 @@ workflow {
     TRIM(input_fastqs)
     KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
     BRACKEN(KRAKEN2.out.sid, KRAKEN2.out.report, kraken2_db)
+    KRONA(BRACKEN.out.sid, BRACKEN.out.txt)
     METASPADES(TRIM.out.trimmed_reads)
+    MEGAHIT(TRIM.out.trimmed_reads)
     ALIGN(TRIM.out.trimmed_reads, METASPADES.out.contigs)
     METABAT2(ALIGN.out.sid, METASPADES.out.contigs, ALIGN.out.bam)
     CHECKM(METABAT2.out.sid, METABAT2.out.bins)

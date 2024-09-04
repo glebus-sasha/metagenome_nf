@@ -5,15 +5,17 @@ process PROKKA {
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/PROKKA"
 //	  debug true
     errorStrategy 'ignore'
-
+    cpus params.cpus
+    memory params.memory
+    
     input:
     val sid
     path contigs
     path bam
 
     output:
-    val "${sid}", emit: sid
-    path "${sid}_bins/*", emit: bins
+    val "${sid}",               emit: sid
+    path "${sid}_bins/*",       emit: bins
 
     
     script:

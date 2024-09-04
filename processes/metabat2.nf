@@ -6,6 +6,7 @@ process METABAT2 {
 //	  debug true
     errorStrategy 'ignore'
     cpus params.cpus
+    memory params.memory
 
     input:
     val sid
@@ -13,8 +14,8 @@ process METABAT2 {
     path bam
 
     output:
-    val "${sid}", emit: sid
-    path "${sid}_bins", emit: bins
+    val "${sid}",           emit: sid
+    path "${sid}_bins",     emit: bins
 
     
     script:

@@ -6,14 +6,15 @@ process ALIGN {
 //	  debug true
     errorStrategy 'ignore'
     cpus params.cpus
+    memory params.memory
 
     input:
     tuple val(sid), path(reads1), path(reads2)
     path reference
 
     output:
-    val sid, emit: sid
-    path "*.sorted.bam", emit: bam
+    val sid,                emit: sid
+    path "*.sorted.bam",    emit: bam
     
     script:
     """
