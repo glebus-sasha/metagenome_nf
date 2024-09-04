@@ -1,6 +1,6 @@
 // Define the `MEGAHIT` process that performs assembling readings into contingencies
 process MEGAHIT {
-    container = 'cimendes/metaspades:11.10.2018-1'
+    container = 'nanozoo/megahit:1.2.9--87c4487'
     tag "${sid}"
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/MEGAHIT"
 //	debug true
