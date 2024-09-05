@@ -4,7 +4,7 @@ include { QCONTROL }            from './processes/qcontrol.nf'
 include { TRIM }                from './processes/trim.nf'
 include { KRAKEN2 }             from './processes/kraken2.nf'
 include { BRACKEN }             from './processes/bracken.nf'
-include { KRONA }             from './processes/krona.nf'
+include { KRONA }               from './processes/krona.nf'
 include { METASPADES }          from './processes/metaspades.nf'
 include { MEGAHIT }             from './processes/megahit.nf'
 include { ALIGN }               from './processes/align.nf'
@@ -12,6 +12,7 @@ include { METABAT2 }            from './processes/metabat2.nf'
 include { CHECKM }              from './processes/checkm.nf'
 include { GTDBTK }              from './processes/gtdbtk.nf'
 include { REPORT }              from './processes/report.nf'
+include { KRONA_2 }             from './processes/krona_2.nf'
 
 // Logging pipeline information
 log.info """\
