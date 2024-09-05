@@ -1,7 +1,7 @@
 // Define the `REPORT` process that performs report
 process REPORT {
     container = 'staphb/multiqc:latest'
-    tag "$flagstat"
+    tag "$fastp"
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/REPORT"
 //	  debug true
     errorStrategy 'ignore'
@@ -13,14 +13,13 @@ process REPORT {
     path fastqc
     path kraken2
     path bracken
-    path gtdbtk
 
     output:
     path '*.html', emit: html
 
     script:
     """
-    multiqc $fastqc $fastp $kraken2 $bracken $gtdbtk
+    multiqc $fastp $fastqc $kraken2 $bracken
     """
 
     stub:
