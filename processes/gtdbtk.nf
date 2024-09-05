@@ -11,14 +11,16 @@ process GTDBTK {
     input:
     val sid
     path bins
+    path db
     
     output:
-    val(sid),               emit: sid
+    val("${sid}"),          emit: sid
     path("${sid}"),         emit: result
     
     script:
     """
-    gtdbtk classify_wf --genome_dir ${bins} --out_dir ${sid} --cpus ${task.cpus} --skip_ani_screen
+    export GTDBTK_DATA_PATH=${db}
+    gtdbtk classify_wf --genome_dir ${bins} --out_dir ${sid} --cpus ${task.cpus} --mash_db ${db}
     """
 
     stub:
