@@ -14,8 +14,9 @@ process GTDBTK {
     path db
     
     output:
-    val("${sid}"),          emit: sid
-    path("${sid}"),         emit: result
+    val sid,          emit: sid
+    path sid,         emit: result
+
     
     script:
     """
