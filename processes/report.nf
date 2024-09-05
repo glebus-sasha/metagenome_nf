@@ -11,15 +11,16 @@ process REPORT {
     input:
     path fastp
     path fastqc
-    path flagstat
-    path whatshap
+    path kraken2
+    path bracken
+    path gtdbtk
 
     output:
     path '*.html', emit: html
 
     script:
     """
-    multiqc $fastqc $fastp $flagstat $whatshap
+    multiqc $fastqc $fastp $kraken2 $bracken $gtdbtk
     """
 
     stub:
