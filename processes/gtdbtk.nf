@@ -14,9 +14,9 @@ process GTDBTK {
     path db
     
     output:
-    val sid,                        emit: sid
-    path sid,                       emit: result
-    path "${sid}/classify/*.summary.tsv",    emit: tsv
+    val sid,                                    emit: sid
+    path sid,                                   emit: result
+    path "${sid}/classify/*.summary.tsv",       emit: tsv
 
     
     script:
