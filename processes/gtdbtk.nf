@@ -20,9 +20,7 @@ process GTDBTK {
     script:
     """
     export GTDBTK_DATA_PATH=${db}
-    for file in ${bins}/*.fa; do
-       mv "$file" "${file%.fa}.fna"
-    done
+    rename 's/\.fa$/.fna/' ${bins}/*.fa
     gtdbtk classify_wf --genome_dir ${bins} --out_dir ${sid} --cpus ${task.cpus} --mash_db ${db}
     """
 
