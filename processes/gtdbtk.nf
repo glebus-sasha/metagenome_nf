@@ -20,6 +20,7 @@ process GTDBTK {
     script:
     """
     export GTDBTK_DATA_PATH=${db}
+    mv ${bins}/*.fa ${bins}/*.fna
     gtdbtk classify_wf --genome_dir ${bins} --out_dir ${sid} --cpus ${task.cpus} --mash_db ${db}
     """
 
