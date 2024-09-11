@@ -58,6 +58,11 @@ workflow {
         def pipeline_report_dir = new File("${params.outdir}/pipeline_info/")
         pipeline_report_dir.mkdirs()
     }
+    // Create the symbolic link after the final process
+    script:
+    """
+    ln -sfn "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}" "${params.outdir}/latest"
+    """
 }
 
 
