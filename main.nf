@@ -12,7 +12,6 @@ include { METABAT2 }            from './processes/metabat2.nf'
 include { CHECKM }              from './processes/checkm.nf'
 include { GTDBTK }              from './processes/gtdbtk.nf'
 include { REPORT }              from './processes/report.nf'
-include { KRONA_2 }             from './processes/krona_2.nf'
 
 // Logging pipeline information
 log.info """\
@@ -31,7 +30,7 @@ def result_dir = new File("${params.outdir}")
 result_dir.mkdirs()
 
 // Define the input channel for FASTQ files, if provided
-input_fastqs = params.reads ? Channel.fromFilePairs("${params.reads}/*[rR]{1,2}*.*{fastq,fq}*", checkIfExists: true) : null
+input_fastqs = params.reads ? Channel.fromFilePairs("${params.reads}/*[_rR]?[12].[fq|fastq]*", checkIfExists: true) : null
 
 // Define the input channel for Kraken2 data base, if provided
 kraken2_db = params.kraken2_db ? Channel.fromPath("${params.kraken2_db}").collect(): null
@@ -53,7 +52,6 @@ workflow {
     CHECKM(METABAT2.out.sid, METABAT2.out.bins)
     GTDBTK(METABAT2.out.sid, METABAT2.out.bins, gtdbtk_db)
     REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), KRAKEN2.out.report.collect(), BRACKEN.out.txt.collect())
-    KRONA_2(GTDBTK.out.sid, GTDBTK.out.tsv)
 
     // Make the pipeline reports directory if it needs
     if ( params.reports ) {
