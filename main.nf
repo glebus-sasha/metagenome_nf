@@ -30,7 +30,7 @@ def result_dir = new File("${params.outdir}")
 result_dir.mkdirs()
 
 // Define the input channel for FASTQ files, if provided
-input_fastqs = params.reads ? Channel.fromFilePairs("${params.reads}/*_r?[12].{fastq,fq,.fastq.gz,.fq.gz}", checkIfExists: true) : null
+input_fastqs = params.reads ? Channel.fromFilePairs("${params.reads}/*_r?[12].{fastq,fq,fastq.gz,fq.gz}", checkIfExists: true) : null
 
 // Define the input channel for Kraken2 data base, if provided
 kraken2_db = params.kraken2_db ? Channel.fromPath("${params.kraken2_db}").collect(): null
