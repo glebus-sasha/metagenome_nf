@@ -28,6 +28,7 @@ process GTDBTK {
     stub:
     """
     mkdir ${sid}
+    mkdir ${sid}/classify
     touch ${sid}/classify/gtdbtk.summary.tsv
     """
 }
