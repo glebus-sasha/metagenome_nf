@@ -30,7 +30,7 @@ def result_dir = new File("${params.outdir}")
 result_dir.mkdirs()
 
 // Define the input channel for FASTQ files, if provided
-input_fastqs = params.reads ? Channel.fromFilePairs("${params.reads}/*R[12].{fastq,fq,fastq.gz,fq.gz}", checkIfExists: true) : null
+input_fastqs = params.reads ? Channel.fromFilePairs("${params.reads}/*[rR]{1,2}*.*{fastq,fq}*", checkIfExists: true) : null
 
 // Define the input channel for Kraken2 data base, if provided
 kraken2_db = params.kraken2_db ? Channel.fromPath("${params.kraken2_db}").collect(): null
@@ -58,11 +58,19 @@ workflow {
         def pipeline_report_dir = new File("${params.outdir}/pipeline_info/")
         pipeline_report_dir.mkdirs()
     }
+    
     // Create the symbolic link after the final process
-    script:
-    """
-    ln -sfn "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}" "${params.outdir}/latest"
-    """
+    def latestDir = new File("${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}")
+    def symlink = new File("${params.outdir}/latest")
+    
+    // Check if symlink already exists and delete it if needed
+    if (symlink.exists()) {
+        symlink.delete()
+    }
+    
+    // Create the new symlink
+    def proc = ['ln', '-sfn', latestDir.absolutePath, symlink.absolutePath].execute()
+    proc.waitFor()
 }
 
 
