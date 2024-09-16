@@ -1,6 +1,6 @@
 // Define the `GTDBTK ` process that performs taxonomy classification
 process GTDBTK {
-    container = 'nanozoo-gtdbtk-2.4.0--02c00d5'
+    container = 'ecogenomic/gtdbtk:2.4.0'
     tag "${sid}"
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/GTDBTK"
 //	debug true
