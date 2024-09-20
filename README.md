@@ -109,6 +109,10 @@ nextflow run <your-username>/<your-repository> \
 ```bash
 nextflow run main.nf
 ```
+## Contributors
+
+- Oxana Kolpakova ([@OxanaKolpakova](https://github.com/OxanaKolpakova))
+- Glebus Aleksandr ([@glebus-sasha](https://github.com/glebus-sasha/))
 
 ## License
 
