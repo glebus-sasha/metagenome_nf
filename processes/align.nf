@@ -6,7 +6,7 @@ process ALIGN {
 //	  debug true
     errorStrategy 'ignore'
     cpus params.cpus
-    memory params.memory
+    memory '100 GB'
 
     input:
     tuple val(sid), path(reads1), path(reads2)
