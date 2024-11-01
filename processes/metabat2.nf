@@ -6,7 +6,7 @@ process METABAT2 {
 //	  debug true
     errorStrategy 'ignore'
     cpus params.cpus
-    memory params.memory
+    memory '60 GB'
 
     input:
     val sid
