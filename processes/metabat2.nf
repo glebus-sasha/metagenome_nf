@@ -16,7 +16,7 @@ process METABAT2 {
     script:
     """
     runMetaBat.sh -t ${task.cpus} ${contigs} ${bam} 
-    mv final.contigs.fa.metabat* ${sid}_bins
+    mv ${sid}*/final.contigs.fa ${sid}_bins
     """
 
     stub:
