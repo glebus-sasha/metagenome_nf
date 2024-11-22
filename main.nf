@@ -79,10 +79,10 @@ workflow t {
     MEGAHIT(TRIM.out.trimmed_reads)
     TRIM.out.trimmed_reads.join(MEGAHIT.out.contigs) |
     ALIGN
-//    MEGAHIT.out.contigs.join(ALIGN.out.bam) |
-//    METABAT2 |
-//    CHECKM
-//    GTDBTK(METABAT2.out.bins, gtdbtk_db)
+    MEGAHIT.out.contigs.join(ALIGN.out.bam) |
+    METABAT2 |
+    CHECKM
+    GTDBTK(METABAT2.out.bins, gtdbtk_db)
 //    KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
 //    BRACKEN(KRAKEN2.out.sid, KRAKEN2.out.report, kraken2_db)
 //    KRONA(BRACKEN.out.sid, BRACKEN.out.txt)
