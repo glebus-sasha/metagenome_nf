@@ -16,7 +16,7 @@ process MEGAHIT {
     
     script:
     """
-    megahit -1 ${reads1} -2 ${reads2} -o ${sid}
+    megahit -1 ${reads1} -2 ${reads2} -o ${sid} -t ${task.cpus}
     """
 
     stub:
