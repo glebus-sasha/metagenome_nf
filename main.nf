@@ -107,6 +107,11 @@ workflow t {
     proc.waitFor()
 }
 
+workflow {
+    t()
+}
+
+
 
 
 
