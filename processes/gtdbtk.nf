@@ -5,8 +5,6 @@ process GTDBTK {
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/GTDBTK"
 //	debug true
     errorStrategy 'ignore'
-    cpus params.cpus
-    memory '60 GB'
 
     input:
     val sid
