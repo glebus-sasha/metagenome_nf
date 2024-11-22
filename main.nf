@@ -74,18 +74,17 @@ workflow original {
 }
 
 workflow t { 
-    QCONTROL(input_fastqs)
-    TRIM(input_fastqs)
+    input_fastqs.randomSample( 6 ) |
+    QCONTROL & TRIM
     KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
     BRACKEN(KRAKEN2.out.sid, KRAKEN2.out.report, kraken2_db)
     KRONA(BRACKEN.out.sid, BRACKEN.out.txt)
-//    METASPADES(TRIM.out.trimmed_reads)
-//    MEGAHIT(TRIM.out.trimmed_reads)
-//    ALIGN(TRIM.out.trimmed_reads, MEGAHIT.out.contigs)
-//    METABAT2(ALIGN.out.sid, MEGAHIT.out.contigs, ALIGN.out.bam)
-//    CHECKM(METABAT2.out.sid, METABAT2.out.bins)
-//    GTDBTK(METABAT2.out.sid, METABAT2.out.bins, gtdbtk_db)
-//    REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), KRAKEN2.out.report.collect(), BRACKEN.out.txt.collect())
+    MEGAHIT(TRIM.out.trimmed_reads)
+    ALIGN(TRIM.out.trimmed_reads, MEGAHIT.out.contigs)
+    METABAT2(ALIGN.out.sid, MEGAHIT.out.contigs, ALIGN.out.bam)
+    CHECKM(METABAT2.out.sid, METABAT2.out.bins)
+    GTDBTK(METABAT2.out.sid, METABAT2.out.bins, gtdbtk_db)
+    REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), KRAKEN2.out.report.collect(), BRACKEN.out.txt.collect())
 
     // Make the pipeline reports directory if it needs
     if ( params.reports ) {
