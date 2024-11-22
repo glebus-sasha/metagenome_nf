@@ -9,7 +9,7 @@ process KRAKEN2 {
     input:
     tuple val(sid), path(reads1), path(reads2)
     path database
-    val gtdbtk_finish_flag
+//    val gtdbtk_finish_flag
     
     output:
     val(sid),                               emit: sid
