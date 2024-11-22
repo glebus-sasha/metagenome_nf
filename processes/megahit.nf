@@ -11,11 +11,12 @@ process MEGAHIT {
     
     output:
     tuple val("${sid}"), path("${sid}"),                            emit: megahit
-    tuple val("${sid}"), path("${sid}/final.contigs.fa"),           emit: contigs
+    tuple val("${sid}"), path("${sid}.contigs.fa"),                 emit: contigs
     
     script:
     """
     megahit -1 ${reads1} -2 ${reads2} -o ${sid} -t ${task.cpus}
+    mv ${sid}/final.contigs.fa  ${sid}.contigs.fa 
     """
 
     stub:
