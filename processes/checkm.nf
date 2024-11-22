@@ -7,8 +7,7 @@ process CHECKM {
     errorStrategy 'ignore'
 
     input:
-    val sid
-    path bins
+    tuple val(sid), path(bins)
 
     output:
     val "${sid}",       emit: sid

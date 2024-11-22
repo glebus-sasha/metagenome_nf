@@ -10,8 +10,7 @@ process METABAT2 {
     tuple val(sid), path(contigs), path(bam)
 
     output:
-    val "${sid}",           emit: sid
-    path "${sid}_bins",     emit: bins
+    tuple val(${sid}), path "${sid}_bins",     emit: bins
 
     
     script:
