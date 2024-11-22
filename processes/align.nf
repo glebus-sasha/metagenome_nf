@@ -9,8 +9,7 @@ process ALIGN {
     memory '60 GB'
 
     input:
-    tuple val(sid), path(reads1), path(reads2)
-    tuple val(sid), path(reference)
+    tuple val(sid), path(reads1), path(reads2), path(reference)
 
     output:
     tuple val(sid), path("*.sorted.bam"),    emit: bam

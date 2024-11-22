@@ -77,8 +77,8 @@ workflow t {
     input_fastqs |
     QCONTROL & TRIM
     MEGAHIT(TRIM.out.trimmed_reads)
-    TRIM.out.trimmed_reads.join(MEGAHIT.out.contigs).view()
-//    ALIGN
+    TRIM.out.trimmed_reads.join(MEGAHIT.out.contigs) |
+    ALIGN
 //    MEGAHIT.out.contigs.join(ALIGN.out.bam) |
 //    METABAT2 |
 //    CHECKM
