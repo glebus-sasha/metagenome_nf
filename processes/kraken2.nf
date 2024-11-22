@@ -5,8 +5,6 @@ process KRAKEN2 {
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/KRAKEN2"
 //	debug true
     errorStrategy 'ignore'
-    cpus params.cpus
-    memory '100 GB'
     
     input:
     tuple val(sid), path(reads1), path(reads2)
@@ -29,7 +27,7 @@ process KRAKEN2 {
     --paired \
     --minimum-base-quality 20 \
     --gzip-compressed \
-    --threads 95 \
+    --threads ${task.cpus} \
     ${reads1} ${reads2}
     """
 

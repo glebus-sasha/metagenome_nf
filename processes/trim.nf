@@ -5,8 +5,6 @@ process TRIM{
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/TRIM"
 //	  debug true
     errorStrategy 'ignore'
-    cpus params.cpus
-    memory params.memory
 
     input:
     tuple val(sid), path(reads)

@@ -5,8 +5,6 @@ process KRONA {
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/KRONA"
 //	debug true
     errorStrategy 'ignore'
-    cpus params.cpus
-    memory params.memory
     
     input:
     val sid
