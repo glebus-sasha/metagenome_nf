@@ -76,14 +76,14 @@ workflow original {
 workflow t { 
     input_fastqs.randomSample( 200 ) |
     QCONTROL & TRIM
-//    MEGAHIT(TRIM.out.trimmed_reads)
-//    ALIGN(TRIM.out.trimmed_reads, MEGAHIT.out.contigs)
-//    METABAT2(ALIGN.out.sid, MEGAHIT.out.contigs, ALIGN.out.bam)
-//    CHECKM(METABAT2.out.sid, METABAT2.out.bins)
-//    GTDBTK(METABAT2.out.sid, METABAT2.out.bins, gtdbtk_db)
-    KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
-    BRACKEN(KRAKEN2.out.sid, KRAKEN2.out.report, kraken2_db)
-    KRONA(BRACKEN.out.sid, BRACKEN.out.txt)
+    MEGAHIT(TRIM.out.trimmed_reads)
+    ALIGN(TRIM.out.trimmed_reads, MEGAHIT.out.contigs)
+    METABAT2(ALIGN.out.sid, MEGAHIT.out.contigs, ALIGN.out.bam)
+    CHECKM(METABAT2.out.sid, METABAT2.out.bins)
+    GTDBTK(METABAT2.out.sid, METABAT2.out.bins, gtdbtk_db)
+//    KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
+//    BRACKEN(KRAKEN2.out.sid, KRAKEN2.out.report, kraken2_db)
+//    KRONA(BRACKEN.out.sid, BRACKEN.out.txt)
     REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), KRAKEN2.out.report.collect(), BRACKEN.out.txt.collect())
 
     // Make the pipeline reports directory if it needs
