@@ -10,11 +10,10 @@ process ALIGN {
 
     input:
     tuple val(sid), path(reads1), path(reads2)
-    path reference
+    tuple val(sid), path(reference)
 
     output:
-    val sid,                emit: sid
-    path "*.sorted.bam",    emit: bam
+    tuple val(sid), path("*.sorted.bam"),    emit: bam
     
     script:
     """

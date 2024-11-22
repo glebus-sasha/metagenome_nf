@@ -10,9 +10,8 @@ process MEGAHIT {
     tuple val(sid), path(reads1), path(reads2)
     
     output:
-    val "${sid}",                                                   emit: sid
-    path "${sid}",                                                  emit: megahit
-    path "${sid}/final.contigs.fa",                                 emit: contigs
+    tuple val("${sid}"), path("${sid}"),                            emit: megahit
+    tuple val("${sid}"), path("${sid}/final.contigs.fa"),           emit: contigs
     
     script:
     """

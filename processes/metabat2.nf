@@ -7,9 +7,8 @@ process METABAT2 {
     errorStrategy 'ignore'
 
     input:
-    val sid
-    path contigs
-    path bam
+    tuple val(sid), path(contigs)
+    tuple val(sid), path(bam)
 
     output:
     val "${sid}",           emit: sid

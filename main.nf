@@ -78,7 +78,7 @@ workflow t {
     QCONTROL & TRIM
     MEGAHIT(TRIM.out.trimmed_reads)
     ALIGN(TRIM.out.trimmed_reads, MEGAHIT.out.contigs)
-    METABAT2(ALIGN.out.sid, MEGAHIT.out.contigs, ALIGN.out.bam)
+    METABAT2(MEGAHIT.out.contigs, ALIGN.out.bam)
     CHECKM(METABAT2.out.sid, METABAT2.out.bins)
     GTDBTK(METABAT2.out.sid, METABAT2.out.bins, gtdbtk_db)
 //    KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
