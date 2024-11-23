@@ -74,9 +74,7 @@ workflow original {
 }
 
 workflow t { 
-    def output_dir = "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}"
-
-    input_fastqs |
+    input_fastqs..randomSample( 10 ) |
     QCONTROL & TRIM
     MEGAHIT(TRIM.out.trimmed_reads)
     TRIM.out.trimmed_reads.join(MEGAHIT.out.contigs) |
