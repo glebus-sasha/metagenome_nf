@@ -11,7 +11,7 @@ process CHECKM {
 
     output:
     val "${sid}",               emit: sid
-    path "${sid}/bins",         emit: bins
+    path "${sid}/bins/bin*",         emit: bins
 
     
     script:
