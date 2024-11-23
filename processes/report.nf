@@ -13,7 +13,7 @@ process REPORT {
     path bracken
 
     output:
-    path '*.html', emit: html
+    path 'multiqc_report.html', emit: html
 
     script:
     """
