@@ -2,7 +2,7 @@
 process METASPADES {
     container = 'cimendes/metaspades:11.10.2018-1'
     tag "${sid}"
-    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/METASPADES"
+    publishDir "${output_dir}/METASPADES"
 //	debug true
     errorStrategy 'ignore'
     cpus params.cpus

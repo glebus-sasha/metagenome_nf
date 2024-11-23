@@ -2,7 +2,7 @@
 process MEGAHIT {
     container = 'nanozoo/megahit:1.2.9--87c4487'
     tag "${sid}"
-    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/MEGAHIT"
+    publishDir "${output_dir}/contig_assembly/contigs", pattern: '*.contigs.fa'
 //	debug true
     errorStrategy 'ignore'
     

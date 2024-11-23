@@ -2,7 +2,7 @@
 process TRIM{
     container = 'nanozoo/fastp:0.23.1--9f2e255'
     tag "${sid}"
-    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/TRIM"
+    publishDir "${output_dir}/reads_quality_control/before_after_trimming", pattern: '*.html'
 //	  debug true
     errorStrategy 'ignore'
 

@@ -2,7 +2,7 @@
 process METABAT2 {
     container = 'nanozoo/metabat2:2.15--c1941c7'
     tag "${sid}"
-    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/METABAT2"
+    publishDir "${output_dir}/contig_assembly/draft_bins"
 //	  debug true
     errorStrategy 'ignore'
 

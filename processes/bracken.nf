@@ -2,7 +2,7 @@
 process BRACKEN {
     container = 'staphb/bracken:latest'
     tag "${sid}"
-    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/BRACKEN"
+    publishDir "${output_dir}/kraken_taxonomy/bracken"
 //	debug true
     errorStrategy 'ignore'
     

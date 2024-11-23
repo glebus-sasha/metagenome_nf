@@ -2,7 +2,7 @@
 process QCONTROL{
     container = 'staphb/fastqc:0.12.1'
     tag "${sid}"
-    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/QCONTROL", pattern: '*.html'
+    publishDir "${output_dir}/reads_quality_control/before_trimming", pattern: '*.html'
 //	debug true
     errorStrategy 'ignore'
 
