@@ -74,7 +74,7 @@ workflow original {
 }
 
 workflow t { 
-    input_fastqs.randomSample( 10 ) |
+    input_fastqs.randomSample( 1 ) |
     QCONTROL & TRIM
     MEGAHIT(TRIM.out.trimmed_reads)
     TRIM.out.trimmed_reads.join(MEGAHIT.out.contigs) |
