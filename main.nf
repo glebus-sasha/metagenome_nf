@@ -83,10 +83,10 @@ workflow t {
     METABAT2 |
     CHECKM
     GTDBTK(METABAT2.out.bins, gtdbtk_db)
-//    KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
-//    BRACKEN(KRAKEN2.out.sid, KRAKEN2.out.report, kraken2_db)
-//    KRONA(BRACKEN.out.sid, BRACKEN.out.txt)
-//    REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), KRAKEN2.out.report.collect(), BRACKEN.out.txt.collect())
+    KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
+    BRACKEN(KRAKEN2.out.sid, KRAKEN2.out.report, kraken2_db)
+    KRONA(BRACKEN.out.sid, BRACKEN.out.txt)
+    REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), KRAKEN2.out.report.collect(), BRACKEN.out.txt.collect())
 
     // Make the pipeline reports directory if it needs
     if ( params.reports ) {
