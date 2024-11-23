@@ -29,8 +29,6 @@ log.info """\
 def result_dir = new File("${params.outdir}")
 result_dir.mkdirs()
 
-def output_dir = "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}"
-
 // Define the input channel for FASTQ files, if provided
 input_fastqs = params.reads ? Channel.fromFilePairs("${params.reads}/*[rR]{1,2}*.*{fastq,fq}*", checkIfExists: true) : null
 
@@ -76,6 +74,8 @@ workflow original {
 }
 
 workflow t { 
+    def output_dir = "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}"
+
     input_fastqs |
     QCONTROL & TRIM
     MEGAHIT(TRIM.out.trimmed_reads)
