@@ -2,7 +2,7 @@
 process CHECKM {
     container = 'nanozoo/checkm:1.1.3--c79a047'
     tag "${sid}"
-    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/contig_assembly/annotated_bins", saveAs "${sid}"
+    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/contig_assembly/annotated_bins", saveAs: "${sid}"
 //	  debug true
     errorStrategy 'ignore'
 
