@@ -111,9 +111,7 @@ workflow t {
 }
 
 workflow {
-    // t()
-    def output_dir = "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}"
-    printf(output_dir)
+    t()
 }
 
 

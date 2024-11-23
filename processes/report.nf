@@ -2,7 +2,7 @@
 process REPORT {
     container = 'staphb/multiqc:latest'
     tag "$fastp"
-    publishDir "${output_dir}"
+    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}"
 //	  debug true
     errorStrategy 'ignore'
     	

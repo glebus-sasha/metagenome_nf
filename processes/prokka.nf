@@ -2,7 +2,7 @@
 process PROKKA {
     container = 'nanozoo/prokka:1.14.6--c99ff65'
     tag "${sid}"
-    publishDir "${output_dir}/PROKKA"
+    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/PROKKA"
 //	  debug true
     errorStrategy 'ignore'
     cpus params.cpus

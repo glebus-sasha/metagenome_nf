@@ -2,7 +2,7 @@
 process KRAKEN2 {
     container = 'staphb/kraken2:latest'
     tag "${sid}"
-    publishDir "${output_dir}/other/kraken2_reports"
+    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/other/kraken2_reports"
 //	debug true
     errorStrategy 'ignore'
     
