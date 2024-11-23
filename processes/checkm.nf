@@ -10,8 +10,8 @@ process CHECKM {
     tuple val(sid), path(bins)
 
     output:
-    val "${sid}",               emit: sid
-    path "${sid}/bins/bin*",         emit: bins
+    val "${sid}",                   emit: sid
+    path "${sid}/bins/bin*",        emit: bins
 
     
     script:
@@ -22,6 +22,7 @@ process CHECKM {
         -t ${task.cpus} \
         ${bins} \
         ${sid}    
+    mv ${sid}/bins ${sid}
     """
 
     stub:
