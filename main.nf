@@ -77,12 +77,6 @@ workflow original {
 }
 
 workflow t { 
-
-    if ( params.reports ) {
-        def pipeline_report_dir = new File("${params.outdir}/pipeline_info/")
-        pipeline_report_dir.mkdirs()
-    }
-    
 //    input_fastqs.randomSample( 1 ) |
     input_fastqs |
     QCONTROL & TRIM
