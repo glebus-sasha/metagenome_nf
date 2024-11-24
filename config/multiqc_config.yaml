@@ -1,17 +1,2 @@
 title: "Combined Report"
 subtitle: "This report summarizes the results of taxonomy analysis and quality control"
-custom_logo: "./metagenome_NF.jpg"
-
-module_order:
-  - kraken
-      name: "Kraken2 taxonomy"
-      anchor: "kraken2_taxonomy"
-      info: "Kraken2 results summarizing taxonomy classification."
-  - fastqc:
-      name: "Before trimming"
-      anchor: "fastqc_before_trimming"
-      info: "The Report shows FastQC results before trimming."
-  - fastp
-      name: "Quality before / after trimming"
-      anchor: "fastp_before_after_trimming"
-      info: "Comparison of reads quality before and after trimming."
