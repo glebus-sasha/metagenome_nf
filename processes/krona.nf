@@ -2,7 +2,7 @@
 process KRONA {
     container = 'nanozoo/krona:2.7.1--e7615f7'
     tag "${sid}"
-    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/kraken_taxonomy/visualisation"
+    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/metagenome_taxonomy/visualisation"
 //	debug true
     errorStrategy 'ignore'
     
