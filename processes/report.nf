@@ -9,7 +9,6 @@ process REPORT {
     input:
     path fastp
     path fastqc
-    path kraken2
     path bracken
 
     output:
@@ -17,7 +16,7 @@ process REPORT {
 
     script:
     """
-    multiqc $fastp $fastqc $kraken2 $bracken
+    multiqc $fastp $fastqc $bracken
     """
 
     stub:
