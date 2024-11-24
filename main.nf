@@ -74,7 +74,8 @@ workflow original {
 }
 
 workflow t { 
-    input_fastqs.randomSample( 1 ) |
+//    input_fastqs.randomSample( 1 ) |
+    input_fastqs |
     QCONTROL & TRIM
     MEGAHIT(TRIM.out.trimmed_reads)
     TRIM.out.trimmed_reads.join(MEGAHIT.out.contigs) |
@@ -93,19 +94,6 @@ workflow t {
         def pipeline_report_dir = new File("${params.outdir}/pipeline_info/")
         pipeline_report_dir.mkdirs()
     }
-    
-    // Create the symbolic link after the final process
-    def latestDir = new File("${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}")
-    def symlink = new File("${params.outdir}/latest")
-    
-    // Check if symlink already exists and delete it if needed
-    if (symlink.exists()) {
-        symlink.delete()
-    }
-    
-    // Create the new symlink
-    def proc = ['ln', '-sfn', latestDir.absolutePath, symlink.absolutePath].execute()
-    proc.waitFor()
 }
 
 workflow {
