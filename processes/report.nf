@@ -18,7 +18,7 @@ process REPORT {
 
     script:
     """
-    multiqc $fastp $fastqc $kraken2 -c $config
+    multiqc $fastp $fastqc $kraken2 -c $config -n "Combined_report.html"
     """
 
     stub:
