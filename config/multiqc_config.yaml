@@ -1,0 +1,20 @@
+report_title: "combined_report.html"
+
+custom_sections:
+  - name: "Kraken2 taxonomy"
+    anchor_name: "kraken2_taxonomy"
+    description: "Kraken2 results summarizing taxonomy classification."
+    sections:
+      - kraken2
+
+  - name: "Reads quality control"
+    anchor_name: "reads_qc"
+    subsections:
+      - name: "Before trimming"
+        description: "Quality control of raw reads before trimming."
+        sections:
+          - fastqc
+      - name: "Before / After trimming"
+        description: "Comparison of reads quality before and after trimming."
+        sections:
+          - fastp

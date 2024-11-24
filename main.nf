@@ -38,6 +38,8 @@ kraken2_db = params.kraken2_db ? Channel.fromPath("${params.kraken2_db}").collec
 // Define the input channel for GTDB-TK data base, if provided
 gtdbtk_db = params.gtdbtk_db ? Channel.fromPath("${params.gtdbtk_db}").collect(): null
 
+multiqc_config = Channel.fromPath("./config/multiqc_config.yaml").collect()
+
 // Define the workflow
 workflow original { 
     QCONTROL(input_fastqs)
@@ -87,7 +89,7 @@ workflow t {
     KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
     BRACKEN(KRAKEN2.out.sid, KRAKEN2.out.report, kraken2_db)
     KRONA(BRACKEN.out.sid, BRACKEN.out.txt)
-    REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), BRACKEN.out.txt.collect())
+    REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), KRAKEN2.out.report.collect(), multiqc_config)
 
     // Make the pipeline reports directory if it needs
     if ( params.reports ) {

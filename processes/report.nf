@@ -9,18 +9,19 @@ process REPORT {
     input:
     path fastp
     path fastqc
-    path bracken
+    path kraken2
+    path config
 
     output:
-    path 'multiqc_report.html', emit: html
+    path '*.html', emit: html
 
     script:
     """
-    multiqc $fastp $fastqc $bracken
+    multiqc $fastp $fastqc $kraken2 -c $config
     """
 
     stub:
     """
-    touch multiqc_report.html
+    touch combined_report.html
     """
 }
