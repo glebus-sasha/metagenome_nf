@@ -11,6 +11,7 @@ process REPORT {
     path fastqc
     path kraken2
     path config
+    path logo
 
     output:
     path '*.html', emit: html

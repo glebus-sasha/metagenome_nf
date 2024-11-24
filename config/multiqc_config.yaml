@@ -1,4 +1,6 @@
-report_title: "combined_report.html"
+title: "Combined Report"
+subtitle: "This report summarizes the results of taxonomy analysis and quality control"
+custom_logo: "./metagenome_NF.jpg"
 
 custom_sections:
   - name: "Kraken2 taxonomy"
