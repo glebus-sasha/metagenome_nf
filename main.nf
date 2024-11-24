@@ -42,42 +42,7 @@ multiqc_config = Channel.fromPath("./config/multiqc_config.yaml").collect()
 multiqc_logo = Channel.fromPath("./icons/metagenome_NF.jpg").collect()
 
 // Define the workflow
-workflow original { 
-    QCONTROL(input_fastqs)
-    TRIM(input_fastqs)
-    KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
-    BRACKEN(KRAKEN2.out.sid, KRAKEN2.out.report, kraken2_db)
-    KRONA(BRACKEN.out.sid, BRACKEN.out.txt)
-//    METASPADES(TRIM.out.trimmed_reads)
-    MEGAHIT(TRIM.out.trimmed_reads)
-    ALIGN(TRIM.out.trimmed_reads, MEGAHIT.out.contigs)
-    METABAT2(ALIGN.out.sid, MEGAHIT.out.contigs, ALIGN.out.bam)
-    CHECKM(METABAT2.out.sid, METABAT2.out.bins)
-    GTDBTK(METABAT2.out.sid, METABAT2.out.bins, gtdbtk_db)
-    REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), KRAKEN2.out.report.collect(), BRACKEN.out.txt.collect())
-
-    // Make the pipeline reports directory if it needs
-    if ( params.reports ) {
-        def pipeline_report_dir = new File("${params.outdir}/pipeline_info/")
-        pipeline_report_dir.mkdirs()
-    }
-    
-    // Create the symbolic link after the final process
-    def latestDir = new File("${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}")
-    def symlink = new File("${params.outdir}/latest")
-    
-    // Check if symlink already exists and delete it if needed
-    if (symlink.exists()) {
-        symlink.delete()
-    }
-    
-    // Create the new symlink
-    def proc = ['ln', '-sfn', latestDir.absolutePath, symlink.absolutePath].execute()
-    proc.waitFor()
-}
-
-workflow t { 
-//    input_fastqs.randomSample( 1 ) |
+workflow main { 
     input_fastqs |
     QCONTROL & TRIM
     MEGAHIT(TRIM.out.trimmed_reads)
@@ -94,7 +59,7 @@ workflow t {
 }
 
 workflow {
-    t()
+    main()
 }
 
 
