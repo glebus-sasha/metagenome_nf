@@ -42,7 +42,7 @@ multiqc_config = Channel.fromPath("./config/multiqc_config.yaml").collect()
 multiqc_logo = Channel.fromPath("./icons/metagenome_NF.jpg").collect()
 
 // Define the workflow
-workflow main { 
+workflow { 
     input_fastqs |
     QCONTROL & TRIM
     MEGAHIT(TRIM.out.trimmed_reads)
@@ -56,10 +56,6 @@ workflow main {
     BRACKEN(KRAKEN2.out.sid, KRAKEN2.out.report, kraken2_db)
     KRONA(BRACKEN.out.sid, BRACKEN.out.txt)
     REPORT(TRIM.out.json.collect(), QCONTROL.out.zip.collect(), KRAKEN2.out.report.collect(), multiqc_config, multiqc_logo)
-}
-
-workflow {
-    main()
 }
 
 
