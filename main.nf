@@ -41,12 +41,6 @@ gtdbtk_db = params.gtdbtk_db ? Channel.fromPath("${params.gtdbtk_db}").collect()
 multiqc_config = Channel.fromPath("./config/multiqc_config.yaml").collect()
 multiqc_logo = Channel.fromPath("./icons/metagenome_NF.jpg").collect()
 
-// Make the pipeline reports directory if it needs
-if ( params.reports ) {
-    def pipeline_report_dir = new File("${params.outdir}/pipeline_info/")
-    pipeline_report_dir.mkdirs()
-}
-
 // Define the workflow
 workflow original { 
     QCONTROL(input_fastqs)
