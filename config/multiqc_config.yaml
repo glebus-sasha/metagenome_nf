@@ -3,7 +3,7 @@ subtitle: "This report summarizes the results of taxonomy analysis and quality c
 custom_logo: "./metagenome_NF.jpg"
 
 module_order:
-  - kraken2
+  - kraken
       name: "Kraken2 taxonomy"
       anchor: "kraken2_taxonomy"
       info: "Kraken2 results summarizing taxonomy classification."
