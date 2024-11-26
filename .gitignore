@@ -4,3 +4,4 @@ work
 data
 results
 config/path_config.py
+__pycache__ 

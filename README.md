@@ -1,6 +1,28 @@
 # metagenome_nf
 Nextflow-based pipeline for metagenome analysis
 
+make file path_config.py inside metagenome_nf folder
+```
+mkdir path_config.py
+```
+
+contain path_config.py
+```
+READS_FOLDER    = "path/to/tmp/folder"
+OUTPUT_FOLDER   = "path/to/outpu/folder"
+nextflow_path   = "path/to/metagenome_nf"
+kraken2_db      = "path/to/kraken2_db"
+GTDB_db         = "path/to/GTDB_db/release"
+
+nextflow_command = ["nextflow", "run",
+ "./main.nf", "-profile", "singularity",
+    "--reads", READS_FOLDER,
+    "--outdir", OUTPUT_FOLDER,
+    "--kraken2_db", kraken2_db,
+    "--gtdbtk_db", GTDB_db]
+```
+
+
 ```mermaid
 %%{init: {'theme':'base'}}%%
 flowchart TB
