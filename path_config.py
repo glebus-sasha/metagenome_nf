@@ -1,4 +1,7 @@
-params.outdir           = "/storage/aglebus/meta/results"                                           // Output directory for results
-params.reads            = "/storage/aglebus/meta/data"                                              // Reads files
-params.kraken2_db       = "/storage/aglebus/meta/kraken2_db"                                        // Data base for kraken2
-params.gtdbtk_db        = "/storage/aglebus/meta/GTDB_db/release220"                                // Data base for GTDB-TK
+READS_FOLDER = "/home/aglebus/Documents/metagenome_nf/reads"
+OUTPUT_FOLDER = "/home/aglebus/Documents/metagenome_nf/output"
+nextflow_path = "/home/aglebus/Documents/metagenome_nf"
+kraken2_db       = "/storage/aglebus/meta/kraken2_db"
+gtdbtk_db        = "/storage/aglebus/meta/GTDB_db/release220"
+
+nextflow_command = ["nextflow", "run", "./main.nf", "-profile", "singularity", "--reads", READS_FOLDER, "--outdir", OUTPUT_FOLDER, "--kraken2_db", kraken2_db, "--gtdbtk_db", GTDB_db]

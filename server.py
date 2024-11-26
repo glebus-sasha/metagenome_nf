@@ -12,7 +12,7 @@ from threading import Thread
 config_path = '/app' 
 sys.path.append(config_path)
 
-from path_config import READS_FOLDER, OUTPUT_FOLDER, nextflow_path, nextflow_command
+from path_config import READS_FOLDER, OUTPUT_FOLDER, nextflow_path, nextflow_command, kraken2_db, gtdbtk_db
 
 app = Flask(__name__)
 socketio = SocketIO(app)
