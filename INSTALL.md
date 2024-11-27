@@ -46,5 +46,6 @@ WantedBy=multi-user.target
 ```
 enable service
 ```
+systemctl daemon-reload
 sudo systemctl enable metagenome_web.service
 ```
