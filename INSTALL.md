@@ -12,7 +12,7 @@ kraken2_db      = "<path/to/kraken2_db>"
 GTDB_db         = "<path/to/GTDB_db/release>"
 
 nextflow_command = ["nextflow", "run",
- "./main.nf", "-profile", "singularity", "sesana"
+ "./main.nf", "-profile", "singularity,sesana",
     "--reads", READS_FOLDER,
     "--outdir", OUTPUT_FOLDER,
     "--kraken2_db", kraken2_db,
