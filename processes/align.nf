@@ -5,8 +5,6 @@ process ALIGN {
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/other/aligments"
 //	  debug true
     errorStrategy 'ignore'
-    cpus params.cpus
-    memory '60 GB'
 
     input:
     tuple val(sid), path(reads1), path(reads2), path(reference)

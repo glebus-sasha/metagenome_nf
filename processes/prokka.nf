@@ -5,8 +5,6 @@ process PROKKA {
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/PROKKA"
 //	  debug true
     errorStrategy 'ignore'
-    cpus params.cpus
-    memory params.memory
     
     input:
     val sid

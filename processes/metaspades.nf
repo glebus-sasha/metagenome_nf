@@ -5,8 +5,6 @@ process METASPADES {
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/METASPADES"
 //	debug true
     errorStrategy 'ignore'
-    cpus params.cpus
-    memory params.memory
     
     input:
     tuple val(sid), path(reads1), path(reads2)
