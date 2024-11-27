@@ -81,14 +81,18 @@ def index():
             .output-files a:hover { color: yellow; }
             .output-files a:visited { color: lightgray; }
             .button-row { display: flex; gap: 10px; justify-content: space-between; align-items: center; align-items: flex-end}
-            #version-number { position: fixed; top: 14px; right: 14px; background-color: rgba(0, 0, 0, 0.0); color: white; padding: 5px 10px; border-radius: 5px; font-size: 14px; z-index: 1000; }
+            #version-number { position: fixed; top: 6px; right: 14px; background-color: rgba(0, 0, 0, 0.0); color: white; padding: 0px 10px; border-radius: 5px; font-size: 14px; z-index: 1000; display: flex; align-items: center; gap: 20px;}
             .upload-row { display: flex; align-items: center; justify-content: flex-start; gap: 10px; flex-wrap: wrap; }
             #upload-button {margin-right: auto;}
             #cancel-upload-button { display: none; }
             .upload-row button:last-child { margin-left: auto; }
+            .no-underline { text-decoration: none; color: white; }
+            .no-underline:hover, .no-underline:active, .no-underline:visited { color: white; }
         </style>
         <h1>Metagenome NF</h1>
-        <div id="version-number">Версия 2.0</div>
+        <div id="version-number">Версия 2.0
+            <p><a href="https://docs.google.com/document/d/1wzGcBp868aPvKoOo0Jx8Z-lDEg5iVLzQVS-VXZIbthA/edit?tab=t.0#heading=h.4ikn9g84g3gq" target="_blank" class="no-underline">❔ Справка</a></p>
+        </div>
         <div class="container">
             
                 <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
@@ -129,7 +133,6 @@ def index():
             <a href="{{ url_for('download_all') }}">
                 <button>Скачать файлы</button>
             </a>
-
         </div>
         <script src="{{ request.url_root }}static/socket.io.js"></script>
         <script>
