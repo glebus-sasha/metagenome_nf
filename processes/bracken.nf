@@ -2,7 +2,7 @@
 process BRACKEN {
     container = 'staphb/bracken:latest'
     tag "${sid}"
-    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/metagenome_taxonomy/bracken"
+    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/metagenome_taxonomy/bracken", mode: "copy"
 //	debug true
     errorStrategy 'ignore'
     
