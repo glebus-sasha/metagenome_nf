@@ -33,12 +33,12 @@ Description=Metagenome Analysis Service
 After=network.target
 
 [Service]
-User=genome
-Group=genome
+User=<username>
+Group=<groupname>
 WorkingDirectory=<path/to/metagenome_nf>
-Environment="PATH=/home/username/.sdkman/candidates/java/current/bin:/home/username/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/home/username/.local/bin/flask:/usr/local/bin/nextflow:/media/username/DATA/.reads_tmp:/media/username/DATA/output:/home/username/metagenome_nf"
+Environment="PATH=</home/username/.sdkman/candidates/java/current/bin:/home/username/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/home/username/.local/bin/flask:/usr/local/bin/nextflow:/media/username/DATA/.reads_tmp:/media/username/DATA/output:/home/username/metagenome_nf>"
 Environment="NXF_SINGULARITY_CACHEDIR=</home/username/.singularity>"
-ExecStart=/usr/bin/python3 /home/genome/metagenome_nf/server.py
+ExecStart=/usr/bin/python3 </home/username/metagenome_nf/server.py>
 Restart=always
 StandardOutput=journal
 StandardError=journal
