@@ -76,13 +76,11 @@ def index():
             .progress-bar { width: 100%; background-color: #214168; margin-bottom: 20px; }
             .progress-bar-fill { height: 20px; width: 0; background-color: #4caf50; text-align: center; color: white; line-height: 20px; white-space: nowrap;}
             .custom-file-upload { background-color: #214168; color: white; border: none; cursor: pointer; border-radius: 5px; padding: 10px; display: inline-block; font-size: 14px; }
-            .file-info { font-size: 16px; color: #214168; margin-left: 10px; display: inline-block; vertical-align: middle; margin-right: 10; font-weight: bold; }
+            .file-info { font-size: 16px; color: #214168; margin-left: 10px; display: inline-block; vertical-align: middle; margin-right: 500; font-weight: bold; }
             .output-files a { color: white; }
             .output-files a:hover { color: yellow; }
             .output-files a:visited { color: lightgray; }
-            .button-row { display: flex; gap: 10px; justify-content: space-between; align-items: center; }
-            .button-row form { display: flex; align-items: center; }
-            .button-row input { width: 300px; margin-right: 20px; height: 40px;}
+            .button-row { display: flex; gap: 10px; justify-content: space-between; align-items: center; align-items: flex-end}
             #version-number { position: fixed; top: 14px; right: 14px; background-color: rgba(0, 0, 0, 0.0); color: white; padding: 5px 10px; border-radius: 5px; font-size: 14px; z-index: 1000; }
             .upload-row { display: flex; align-items: center; justify-content: flex-start; gap: 10px; flex-wrap: wrap; }
             #upload-button {margin-right: auto;}
@@ -90,7 +88,7 @@ def index():
             .upload-row button:last-child { margin-left: auto; }
         </style>
         <h1>Metagenome NF</h1>
-        <div id="version-number">Версия 1.0</div>
+        <div id="version-number">Версия 2.0</div>
         <div class="container">
             
                 <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
@@ -447,4 +445,4 @@ def stop_nextflow():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=6532, allow_unsafe_werkzeug=True)
+    socketio.run(app, host='0.0.0.0', port=6531, allow_unsafe_werkzeug=True)
