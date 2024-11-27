@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# version 4.3
 import os
 import sys
 import subprocess
@@ -66,43 +67,51 @@ def index():
             h2 { color: #333; }
             .container { padding: 20px; max-width: 900px; margin: auto; }
             form { margin-bottom: 20px; }
-            input, button { padding: 10px; margin: 5px 0; width: 100%; max-width: 300px; }
-            button { font-size: 14px; background-color: #214168; color: white; border: none; cursor: pointer; border-radius: 5px;}
+            input, button { padding: 10px; margin: 5px 0; width: 100%; max-width: 250px; }
+            button { height: 36px; width: 250px; font-size: 14px; background-color: #214168; color: white; border: none; cursor: pointer; border-radius: 5px;}
             button[disabled] { background-color: #ccc; }
             input[type="file"] { display: none; }
             .console-output { background-color: #214168; color: #fff; padding: 10px; height: 300px; overflow-y: auto; margin-bottom: 20px; font-size: 12px; line-height: 0.5;}
             .output-files { background-color: #214168; padding: 10px; margin-bottom: 20px; }
             .progress-bar { width: 100%; background-color: #214168; margin-bottom: 20px; }
-            .progress-bar-fill { height: 20px; width: 0; background-color: #4caf50; text-align: center; color: white; line-height: 20px; }
+            .progress-bar-fill { height: 20px; width: 0; background-color: #4caf50; text-align: center; color: white; line-height: 20px; white-space: nowrap;}
             .custom-file-upload { background-color: #214168; color: white; border: none; cursor: pointer; border-radius: 5px; padding: 10px; display: inline-block; font-size: 14px; }
             .file-info { font-size: 16px; color: #214168; margin-left: 10px; display: inline-block; vertical-align: middle; margin-right: 10; font-weight: bold; }
             .output-files a { color: white; }
             .output-files a:hover { color: yellow; }
             .output-files a:visited { color: lightgray; }
-            .button-row { display: flex; gap: 10px; justify-content: flex-start; align-items: center; }
-            
+            .button-row { display: flex; gap: 10px; justify-content: space-between; align-items: center; }
+            .button-row form { display: flex; align-items: center; }
+            .button-row input { width: 300px; margin-right: 20px; height: 40px;}
+            #version-number { position: fixed; top: 14px; right: 14px; background-color: rgba(0, 0, 0, 0.0); color: white; padding: 5px 10px; border-radius: 5px; font-size: 14px; z-index: 1000; }
+            .upload-row { display: flex; align-items: center; justify-content: flex-start; gap: 10px; flex-wrap: wrap; }
+            #upload-button {margin-right: auto;}
+            #cancel-upload-button { display: none; }
+            .upload-row button:last-child { margin-left: auto; }
         </style>
         <h1>Metagenome NF</h1>
+        <div id="version-number">Версия 1.0</div>
         <div class="container">
             
                 <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
-                    <label class="custom-file-upload">
-                        Выбрать файлы
-                        <input type="file" id="file-upload" name="reads_files" multiple required>
-                    </label>
-                    <span class="file-info" id="file-info">Файлы не выбраны</span>
-                    <button type="submit" id="upload-button">Загрузить файлы</button>
-                    <button type="button" id="cancel-upload-button" style="display: none;">Остановить загрузку</button>
+                    <div class="upload-row">
+                        <label class="custom-file-upload">
+                            Выбрать файлы
+                            <input type="file" id="file-upload" name="reads_files" multiple required>
+                        </label>
+                        <span class="file-info" id="file-info">Файлы не выбраны</span>
+                        <button type="submit" id="upload-button">Загрузить файлы</button>
+                        <button type="button" id="cancel-upload-button" style="display: none;">Остановить загрузку</button>
+                    </div>
                 </form>
 
                 <div class="progress-bar" id="progress-bar">
                     <div class="progress-bar-fill" id="progress-bar-fill">0%</div>
                 </div>
-            
 
             <div class="button-row">
                 <form action="/run_nextflow" method="post" onsubmit="clearConsole()">
-                    <input type="text" name="launch_name" placeholder="Введите название анализа" required>
+                    <input type="text" name="launch_name" placeholder="Введите название запуска" required pattern="[A-Za-z0-9_]+">
                     <button type="submit" {% if is_running %}disabled{% endif %}>Запустить анализ</button>
                 </form>
                 <form action="/stop_nextflow" method="post">
@@ -438,4 +447,4 @@ def stop_nextflow():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=6532, allow_unsafe_werkzeug=True)
+    socketio.run(app, host='0.0.0.0', port=6531, allow_unsafe_werkzeug=True)
