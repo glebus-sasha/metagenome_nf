@@ -2,19 +2,16 @@
 process CHECKM {
     container = 'nanozoo/checkm:1.1.3--c79a047'
     tag "${sid}"
-    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/CHECKM"
+    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/contig_assembly/annotated_bins", mode: "copy"
 //	  debug true
     errorStrategy 'ignore'
-    cpus params.cpus
-    memory '60 GB'
 
     input:
-    val sid
-    path bins
+    tuple val(sid), path(bins)
 
     output:
-    val "${sid}",       emit: sid
-    path "${sid}",      emit: reports
+    val "${sid}",               emit: sid
+    path "${sid}/bins/",        emit: bins
 
     
     script:

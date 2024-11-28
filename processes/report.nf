@@ -2,28 +2,27 @@
 process REPORT {
     container = 'staphb/multiqc:latest'
     tag "$fastp"
-    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/REPORT"
+    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}", mode: "copy"
 //	  debug true
     errorStrategy 'ignore'
-    cpus params.cpus
-    memory params.memory
     	
     input:
     path fastp
     path fastqc
     path kraken2
-    path bracken
+    path config
+    path logo
 
     output:
     path '*.html', emit: html
 
     script:
     """
-    multiqc $fastp $fastqc $kraken2 $bracken
+    multiqc $fastp $fastqc $kraken2 -c $config -n "summary_report.html"
     """
 
     stub:
     """
-    touch multiqc_report.html
+    touch combined_report.html
     """
 }

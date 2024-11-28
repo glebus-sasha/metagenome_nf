@@ -2,11 +2,9 @@
 process QCONTROL{
     container = 'staphb/fastqc:0.12.1'
     tag "${sid}"
-    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${workflow.runName}/QCONTROL", pattern: '*.html'
+    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/reads_quality_control/before_trimming", pattern: '*.html', mode: "copy"
 //	debug true
     errorStrategy 'ignore'
-    cpus params.cpus
-    memory params.memory
 
     input:
     tuple val(sid), path(reads)
