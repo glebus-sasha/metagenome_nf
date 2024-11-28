@@ -49,3 +49,16 @@ enable service
 systemctl daemon-reload
 sudo systemctl enable metagenome_web.service
 ```
+
+## Update
+
+```
+nextflow self-update
+git pull
+```
+Check path_config.py
+
+```
+systemctl daemon-reload
+sudo systemctl enable metagenome_web.service
+```
