@@ -17,7 +17,7 @@ nextflow_command = ["nextflow", "run",
     "--outdir", OUTPUT_FOLDER,
     "--kraken2_db", kraken2_db,
     "--gtdbtk_db", GTDB_db,
-    --reports]
+    "--reports"]
 ```
 
 create /etc/systemd/system/metagenome_web.service
