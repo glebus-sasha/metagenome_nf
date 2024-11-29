@@ -1,6 +1,6 @@
 make file path_config.py inside metagenome_nf folder
 ```
-mkdir path_config.py
+nano path_config.py
 ```
 
 contain path_config.py
