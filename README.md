@@ -1,5 +1,6 @@
 # metagenome_nf
 Nextflow-based pipeline for metagenome analysis
+https://docs.google.com/document/d/1wzGcBp868aPvKoOo0Jx8Z-lDEg5iVLzQVS-VXZIbthA/edit?tab=t.0#heading=h.4ikn9g84g3gq
 
 ```mermaid
 %%{init: {'theme':'base'}}%%
