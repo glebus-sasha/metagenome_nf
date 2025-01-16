@@ -72,8 +72,8 @@ This pipeline is implemented in Nextflow and includes several stages for metagen
 - **TRIM (fastp)**: Trimming of reads to remove adapters and low-quality sequences using fastp.
 - **KRAKEN2 (Kraken2)**: Taxonomic classification of reads using Kraken2.
 - **BRACKEN (Bracken)**: Estimation of species abundance based on Kraken2 outputs using Bracken.
-- **METASPADES (metaSPAdes)**: Assembly of metagenomic sequences using metaSPAdes.
-- **ALIGN (Bowtie2)**: Alignment of reads to the assembled contigs using BWA MEM.
+- **MEGAHIT (MEGAHIT)**: Assembly of metagenomic sequences using MEGAHIT.
+- **ALIGN (bwa)**: Alignment of reads to the assembled contigs using BWA MEM.
 - **METABAT (MetaBAT2)**: Binning of assembled contigs into metagenomic bins using MetaBAT2.
 - **CHECKM (CheckM)**: Quality assessment and visualization of metagenomic bins using CheckM.
 - **REPORT (MultiQC)**: Compilation of a comprehensive report including QC metrics, taxonomic classification, and assembly results.
