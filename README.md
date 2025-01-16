@@ -76,6 +76,7 @@ This pipeline is implemented in Nextflow and includes several stages for metagen
 - **ALIGN (bwa)**: Alignment of reads to the assembled contigs using BWA MEM.
 - **METABAT (MetaBAT2)**: Binning of assembled contigs into metagenomic bins using MetaBAT2.
 - **CHECKM (CheckM)**: Quality assessment and visualization of metagenomic bins using CheckM.
+- **GTDBTK (GTDBTk)**: Taxonomic annotation of bins GTDBTk.
 - **REPORT (MultiQC)**: Compilation of a comprehensive report including QC metrics, taxonomic classification, and assembly results.
 
 ## Usage
