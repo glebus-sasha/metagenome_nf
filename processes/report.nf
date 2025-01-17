@@ -1,22 +1,20 @@
 // Define the `REPORT` process that performs report
 process REPORT {
-    container = 'staphb/multiqc:latest'
-    tag "$fastp"
+    container 'staphb/multiqc:latest'
+    tag "all samples"
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}", mode: "copy"
 //	  debug true
     errorStrategy 'ignore'
     	
     input:
-    path fastp
-    path fastqc
-    path kraken2
+    path files
 
     output:
-    path '*.html', emit: html
+    path 'summary_report.html', emit: html
 
     script:
     """
-    multiqc $fastp $fastqc $kraken2 -n "summary_report.html"
+    multiqc . -n "summary_report.html"
     """
 
     stub:

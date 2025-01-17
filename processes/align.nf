@@ -1,7 +1,9 @@
 // Define the `ALIGN` process that aligns reads to the reference genome
 process ALIGN {
-    container = 'glebusasha/bwa_samtools'
-    tag "${sid}"
+    container 'glebusasha/bwa_samtools'
+    tag { 
+        sid.length() > 40 ? "${sid.take(20)}...${sid.takeRight(20)}" : sid
+    }
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/other/aligments", mode: "copy"
 //	  debug true
     errorStrategy 'ignore'

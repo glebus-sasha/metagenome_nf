@@ -1,6 +1,6 @@
 // Define the `KRAKEN2` process that performs taxonomy analysis
 process KRAKEN2 {
-    container = 'staphb/kraken2:latest'
+    container 'staphb/kraken2:latest'
     tag "${sid}"
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/other/kraken2_reports", mode: "copy"
 //	debug true

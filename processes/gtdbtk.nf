@@ -1,7 +1,9 @@
 // Define the `GTDBTK ` process that performs taxonomy classification
 process GTDBTK {
-    container = 'glebusasha/my-gtdbtk:2.4.0'
-    tag "${sid}"
+    container 'glebusasha/my-gtdbtk:2.4.0'
+    tag { 
+        sid.length() > 40 ? "${sid.take(20)}...${sid.takeRight(20)}" : sid
+    }
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/contig_assembly/bins_taxonomy", pattern: '*.summary.tsv', mode: "copy"
 //	debug true
     errorStrategy 'ignore'

@@ -1,7 +1,9 @@
 // Define the `METABAT2` process that performs binning contingencies to isolate metagenomic assemblies
 process METABAT2 {
-    container = 'nanozoo/metabat2:2.15--c1941c7'
-    tag "${sid}"
+    container 'nanozoo/metabat2:2.15--c1941c7'
+    tag { 
+        sid.length() > 40 ? "${sid.take(20)}...${sid.takeRight(20)}" : sid
+    }
     publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/contig_assembly/draft_bins", mode: "copy"
 //	  debug true
     errorStrategy 'ignore'
