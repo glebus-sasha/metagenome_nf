@@ -10,15 +10,13 @@ process REPORT {
     path fastp
     path fastqc
     path kraken2
-    path config
-    path logo
 
     output:
     path '*.html', emit: html
 
     script:
     """
-    multiqc $fastp $fastqc $kraken2 -c $config -n "summary_report.html"
+    multiqc $fastp $fastqc $kraken2 -n "summary_report.html"
     """
 
     stub:
