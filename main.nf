@@ -10,7 +10,8 @@ include { MEGAHIT }             from './processes/megahit.nf'
 include { ALIGN }               from './processes/align.nf'
 include { METABAT2 }            from './processes/metabat2.nf'
 include { CHECKM }              from './processes/checkm.nf'
-include { QUAST }               from './processes/quast.nf'
+include { QUAST_CONTIGS }       from './processes/quast_contigs.nf'
+include { QUAST_BIN }           from './processes/quast_bin.nf'
 include { GTDBTK }              from './processes/gtdbtk.nf'
 include { REPORT }              from './processes/report.nf'
 
@@ -40,14 +41,18 @@ kraken2_db = params.kraken2_db ? Channel.fromPath("${params.kraken2_db}").collec
 gtdbtk_db = params.gtdbtk_db ? Channel.fromPath("${params.gtdbtk_db}").collect(): null
 
 workflow { 
-    input_fastqs |
+    input_fastqs          |
     QCONTROL & TRIM
-    MEGAHIT(TRIM.out.trimmed_reads)
+
+    MEGAHIT(TRIM.out.trimmed_reads) 
+    QUAST_CONTIGS(MEGAHIT.out.contigs)
+
     TRIM.out.trimmed_reads.join(MEGAHIT.out.contigs) |
     ALIGN
     MEGAHIT.out.contigs.join(ALIGN.out.bam) |
-    METABAT2 |
-    CHECKM 
+    METABAT2                                |
+    CHECKM
+
     METABAT2.out.bins |
         map { sid, bins_dir ->
             file(bins_dir).listFiles().findAll { it.name.endsWith('.fa') }.collect { bin_file ->
@@ -55,20 +60,17 @@ workflow {
             }
         }             |
         flatMap       |
-        QUAST
+        QUAST_BIN
+
     GTDBTK(METABAT2.out.bins, gtdbtk_db)
     KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
     BRACKEN(KRAKEN2.out.sid, KRAKEN2.out.report, kraken2_db)
     KRONA(BRACKEN.out.sid, BRACKEN.out.txt)
-    TRIM.out.json                  | 
-        mix(QCONTROL.out.zip)      |
-        mix(KRAKEN2.out.report)    |
-        mix(QUAST.out.report)      |
-        collect                    |
+    TRIM.out.json                               |
+        mix(QCONTROL.out.zip)                   |
+        mix(KRAKEN2.out.report)                 |
+        mix(QUAST_CONTIGS.out.quast_results)    |   
+        mix(QUAST_BIN.out.quast_results)        |
+        collect                                 |
         REPORT
 }
-
-
-
-
-

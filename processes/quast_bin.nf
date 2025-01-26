@@ -1,5 +1,5 @@
-// Define the `QUAST` process that performs assessing the quality and integrity of bins
-process QUAST {
+// Define the `QUAST_BIN` process that performs assessing the quality and integrity of bins
+process QUAST_BIN {
     container 'staphb/quast:5.3.0'
     tag { 
         sid.length() > 40 ? "${sid.take(20)}...${sid.takeRight(20)}" : sid
@@ -12,9 +12,8 @@ process QUAST {
     tuple val(sid), path(bin)
 
     output:
-    val "${sid}"                            , emit: sid
-    path "${sid}"                           , emit: quast_results
-    path "${sid}/${bin.baseName}/report.tsv", emit: report
+    val "${sid}"                 , emit: sid
+    path "${sid}/${bin.baseName}", emit: quast_results
 
     script:
     """

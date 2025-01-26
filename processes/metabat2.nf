@@ -19,6 +19,9 @@ process METABAT2 {
     """
     runMetaBat.sh -t ${task.cpus} ${contigs} ${bam} 
     mv ${sid}.contigs.fa.metabat* ${sid}_bins
+    for file in ${sid}_bins/*; do
+        mv "\$file" "${sid}_bins/${sid}_\$(basename "\$file")"
+    done
     """
 
     stub:
