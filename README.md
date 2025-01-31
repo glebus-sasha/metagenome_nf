@@ -1,6 +1,6 @@
 # metagenome_nf
 Nextflow-based pipeline for metagenome analysis
-https://docs.google.com/document/d/1wzGcBp868aPvKoOo0Jx8Z-lDEg5iVLzQVS-VXZIbthA/edit?tab=t.0#heading=h.4ikn9g84g3gq
+[Instruction](https://docs.google.com/document/d/1h06RVDIZ1f9xQbnKjONFoMILpTTpqJHdfO36oNLmpps/edit?usp=sharing)
 
 ```mermaid
 %%{init: {'theme':'base'}}%%
@@ -8,87 +8,23 @@ flowchart TB
     subgraph " "
     v0["Reads"]
     v1["Kraken2 Database"]
-    end
-    v3([QCONTROL])
-    subgraph " "
-    v4["Quality Control Reports"]
-    v6["Trimmed Reads"]
-    v8["Kraken2 Classification"]
-    v11["Spades Assembly"]
-    v12["Spades Assembly Graph"]
-    v13["Metagenomic Contigs"]
-    v17["CheckM Plots"]
-    v18["CheckM Quality Report"]
-    v24["Final Report"]
-    end
-    v5([TRIM])
-    v7([KRAKEN2])
-    v9([BRACKEN])
-    v10([METASPADES])
-    v14([ALIGN])
-    v15([METABAT])
-    v16([CHECKM])
-    v23([REPORT])
-    v2(( ))
-    v19(( ))
-    v20(( ))
-    v21(( ))
-    v22(( ))
-    v0 --> v3
-    v0 --> v5
-    v1 --> v2
-    v3 --> v4
-    v3 --> v20
-    v5 --> v7
-    v5 --> v6
-    v5 --> v10
-    v5 --> v14
-    v5 --> v19
-    v2 --> v7
-    v7 --> v9
-    v7 --> v8
-    v7 --> v21
-    v2 --> v9
-    v9 --> v22
-    v10 --> v13
-    v10 --> v12
-    v10 --> v14
-    v10 --> v11
-    v10 --> v15
-    v14 --> v15
-    v15 --> v16
-    v16 --> v18
-    v16 --> v17
-    v19 --> v23
-    v20 --> v23
-    v21 --> v23
-    v22 --> v23
-    v23 --> v24
-```
-
-```mermaid
-%%{init: {'theme':'base'}}%%
-flowchart TB
-    subgraph " "
-    v0["Channel.fromFilePairs"]
-    v1["Channel.fromPath"]
-    v3["Channel.fromPath"]
+    v3["GTDBTk Database"]
     end
     v5([QCONTROL])
     subgraph " "
-    v6[" "]
-    v8[" "]
-    v10[" "]
-    v12[" "]
-    v18[" "]
-    v19[" "]
-    v23[" "]
-    v25[" "]
-    v26[" "]
-    v28[" "]
-    v31[" "]
-    v32[" "]
-    v39[" "]
+    v6["Quality Control Reports"]
+    v8["Trimmed Reads"]
+    v10["MEGAHIT Contigs"]
+    v12["QUAST Contigs Report"]
+    v18["CheckM Quality Report"]
+    v19["CheckM Plots"]
+    v23["QUAST Bins Report"]
+    v25["GTDBTk Taxonomic Annotation"]
+    v26["GTDBTk Taxonomic Report"]
+    v28["Kraken2 Classification"]
+    v31["Bracken Species Abundance"]
+    v32["Krona Visualization"]
+    v39["Final Report"]
     end
     v7([TRIM])
     v9([MEGAHIT])
@@ -149,6 +85,7 @@ flowchart TB
     v30 --> v31
     v33 --> v38
     v38 --> v39
+
 ```
 ## Description
 
