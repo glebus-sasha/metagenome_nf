@@ -4,7 +4,7 @@ Nextflow-based pipeline for metagenome analysis
 
 ```mermaid
 %%{init: {'theme':'base'}}%%
-flowchart TB
+flowchart LR
     subgraph " "
     v0["Reads"]
     v1["Kraken2 Database"]
