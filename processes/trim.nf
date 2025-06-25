@@ -4,8 +4,6 @@ process TRIM{
     tag { 
         sid.length() > 40 ? "${sid.take(20)}...${sid.takeRight(20)}" : sid
     }
-    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/reads_quality_control/before_after_trimming", pattern: '*.html', mode: "copy"
-//	  debug true
     errorStrategy 'ignore'
 
     input:
@@ -21,13 +19,13 @@ process TRIM{
     fq_2_trimmed = sid + '_R2.fastq.gz'
     """
     fastp \
-    --thread ${task.cpus} \
-    --in1 ${reads[0]} \
-    --in2 ${reads[1]}\
-    --out1 $fq_1_trimmed \
-    --out2 $fq_2_trimmed \
-    --html ${sid}.fastp_stats.html \
-    --json ${sid}.fastp_stats.json 
+        --thread ${task.cpus} \
+        --in1 ${reads[0]} \
+        --in2 ${reads[1]}\
+        --out1 $fq_1_trimmed \
+        --out2 $fq_2_trimmed \
+        --html ${sid}.fastp_stats.html \
+        --json ${sid}.fastp_stats.json 
     """
 
     stub:

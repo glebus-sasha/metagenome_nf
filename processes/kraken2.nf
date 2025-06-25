@@ -2,18 +2,16 @@
 process KRAKEN2 {
     container 'staphb/kraken2:latest'
     tag "${sid}"
-    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/other/kraken2_reports", mode: "copy"
-//	debug true
     errorStrategy 'ignore'
+    cpus params.cpus
     
     input:
     tuple val(sid), path(reads1), path(reads2)
     path database
     
     output:
-    val(sid),                               emit: sid
-    path("${sid}_kraken2_result.txt"),      emit: result
-    path("${sid}_kraken2_report.txt"),      emit: report
+    tuple val(sid), path("${sid}_kraken2_result.txt"),      emit: result
+    tuple val(sid), path("${sid}_kraken2_report.txt"),      emit: report
     
     script:
     """

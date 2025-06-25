@@ -4,8 +4,6 @@ process QUAST_CONTIGS {
     tag { 
         sid.length() > 40 ? "${sid.take(20)}...${sid.takeRight(20)}" : sid
     }
-    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/contig_assembly/contigs_stats", mode: "copy"
-//  debug true
     errorStrategy 'ignore'
 
     input:

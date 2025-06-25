@@ -1,9 +1,6 @@
-// Define the `REPORT` process that performs report
 process REPORT {
     container 'staphb/multiqc:latest'
     tag "all samples"
-    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}", mode: "copy"
-//	  debug true
     errorStrategy 'ignore'
     	
     input:
@@ -14,7 +11,14 @@ process REPORT {
 
     script:
     """
-    multiqc . -n "summary_report.html"
+    cat <<EOF > multiqc_config.yaml
+    module_config:
+    kraken:
+        top_n: 10
+    EOF
+
+    # 2. Запускаем MultiQC с указанием конфига
+    multiqc . -n "summary_report.html" -c multiqc_config.yaml    
     """
 
     stub:

@@ -1,19 +1,24 @@
 #!/usr/bin/env nextflow
-// Include processes
-include { QCONTROL }            from './processes/qcontrol.nf'
-include { TRIM }                from './processes/trim.nf'
-include { KRAKEN2 }             from './processes/kraken2.nf'
-include { BRACKEN }             from './processes/bracken.nf'
-include { KRONA }               from './processes/krona.nf'
-include { METASPADES }          from './processes/metaspades.nf'
-include { MEGAHIT }             from './processes/megahit.nf'
-include { ALIGN }               from './processes/align.nf'
-include { METABAT2 }            from './processes/metabat2.nf'
-include { CHECKM }              from './processes/checkm.nf'
-include { QUAST_CONTIGS }       from './processes/quast_contigs.nf'
-include { QUAST_BIN }           from './processes/quast_bin.nf'
-include { GTDBTK }              from './processes/gtdbtk.nf'
-include { REPORT }              from './processes/report.nf'
+include { QCONTROL                      } from './processes/qcontrol.nf'
+include { TRIM                          } from './processes/trim.nf'
+include { KRAKEN2                       } from './processes/kraken2.nf'
+include { KRAKEN2_CONTIGS               } from './processes/kraken2_contigs.nf'
+include { BRACKEN                       } from './processes/bracken.nf'
+include { BRACKEN as BRACKEN_CONTIGS    } from './processes/bracken.nf'
+include { KRONA                         } from './processes/krona.nf'
+include { KRONA as KRONA_CONTIGS        } from './processes/krona.nf'
+include { KRONA_METAPHLAN               } from './processes/krona_metaphlan.nf'
+include { METASPADES                    } from './processes/metaspades.nf'
+include { MEGAHIT                       } from './processes/megahit.nf'
+include { ALIGN                         } from './processes/align.nf'
+include { METABAT2                      } from './processes/metabat2.nf'
+include { CHECKM                        } from './processes/checkm.nf'
+include { QUAST_CONTIGS                 } from './processes/quast_contigs.nf'
+include { QUAST_BIN                     } from './processes/quast_bin.nf'
+include { GTDBTK                        } from './processes/gtdbtk.nf'
+include { METAPHLAN                     } from './processes/metaphlan.nf'
+include { METAPHLAN_CONTIGS             } from './processes/metaphlan_contigs.nf'
+include { REPORT                        } from './processes/report.nf'
 
 // Logging pipeline information
 log.info """\
@@ -27,18 +32,11 @@ log.info """\
     """
     .stripIndent(true)
 
-// Make the results directory if it needs
-def result_dir = new File("${params.outdir}")
-// result_dir.mkdirs()
-
-// Define the input channel for FASTQ files, if provided
-input_fastqs = Channel.fromFilePairs(["${params.reads}/*[rR]{1,2}*.*{fastq,fq}*", "${params.reads}/*_{1,2}.{fastq,fq}*"])
-
-// Define the input channel for Kraken2 data base, if provided
-kraken2_db = params.kraken2_db ? Channel.fromPath("${params.kraken2_db}").collect(): null
-
-// Define the input channel for GTDB-TK data base, if provided
-gtdbtk_db = params.gtdbtk_db ? Channel.fromPath("${params.gtdbtk_db}").collect(): null
+def result_dir      = new File("${params.outdir}")
+input_fastqs        = Channel.fromFilePairs(["${params.reads}/*[rR]{1,2}*.*{fastq,fq}*", "${params.reads}/*_{1,2}.{fastq,fq}*"])
+kraken2_db          = params.kraken2_db ? Channel.fromPath("${params.kraken2_db}").collect(): null
+gtdbtk_db           = params.gtdbtk_db ? Channel.fromPath("${params.gtdbtk_db}").collect(): null
+metaphlan_db        = params.metaphlan_db ? Channel.fromPath("${params.metaphlan_db}").collect(): null
 
 workflow { 
     input_fastqs          |
@@ -64,13 +62,23 @@ workflow {
 
     GTDBTK(METABAT2.out.bins, gtdbtk_db)
     KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
-    BRACKEN(KRAKEN2.out.sid, KRAKEN2.out.report, kraken2_db)
-    KRONA(BRACKEN.out.sid, BRACKEN.out.txt)
-    TRIM.out.json                               |
-        mix(QCONTROL.out.zip)                   |
-        mix(KRAKEN2.out.report)                 |
-        mix(QUAST_CONTIGS.out.quast_results)    |   
-        mix(QUAST_BIN.out.quast_results)        |
-        collect                                 |
+    KRAKEN2_CONTIGS(MEGAHIT.out.contigs, kraken2_db)
+    METAPHLAN(TRIM.out.trimmed_reads, metaphlan_db)
+    //METAPHLAN_CONTIGS(MEGAHIT.out.contigs, metaphlan_db)
+    BRACKEN(KRAKEN2.out.report, kraken2_db)
+    BRACKEN_CONTIGS(KRAKEN2_CONTIGS.out.report, kraken2_db)
+    //KRONA(BRACKEN.out.txt)
+    //KRONA_CONTIGS(BRACKEN_CONTIGS.out.txt)
+    KRONA_METAPHLAN(METAPHLAN.out.txt)
+    TRIM.out.json                                   |
+        mix(QCONTROL.out.zip)                       |
+        mix(KRAKEN2.out.report.map{it[1]})          |
+        mix(KRAKEN2_CONTIGS.out.report.map{it[1]})  |
+        mix(QUAST_CONTIGS.out.quast_results)        |   
+        mix(QUAST_BIN.out.quast_results)            |
+        mix(METAPHLAN.out.txt.map{it[1]})           |
+        //mix(METAPHLAN_CONTIGS.out.txt.map{it[1]})   |
+        mix(GTDBTK.out.tsv.map{it[1]})              |
+        collect                                     |
         REPORT
 }

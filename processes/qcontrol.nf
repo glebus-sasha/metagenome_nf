@@ -4,8 +4,6 @@ process QCONTROL{
     tag { 
         sid.length() > 40 ? "${sid.take(20)}...${sid.takeRight(20)}" : sid
     }
-    publishDir "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/reads_quality_control/before_trimming", pattern: '*.html', mode: "copy"
-//	debug true
     errorStrategy 'ignore'
 
     input:
