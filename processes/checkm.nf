@@ -27,5 +27,6 @@ process CHECKM {
     stub:
     """
     mkdir ${sid}
+    mkdir ${sid}/bins/
     """
 }

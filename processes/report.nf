@@ -23,6 +23,6 @@ process REPORT {
 
     stub:
     """
-    touch combined_report.html
+    touch summary_report.html
     """
 }

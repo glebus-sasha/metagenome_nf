@@ -23,6 +23,6 @@ process MEGAHIT {
     stub:
     """
     mkdir ${sid}
-    touch ${sid}/final.contigs.fa
+    touch ${sid}.contigs.fa
     """
 }
