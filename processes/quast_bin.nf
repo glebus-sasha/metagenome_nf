@@ -23,6 +23,7 @@ process QUAST_BIN {
 
     stub:
     """
-    mkdir -p ${sid}/quast_results
+    mkdir -p ${sid}
+    mkdir -p ${sid}/${bin.baseName}
     """
 }

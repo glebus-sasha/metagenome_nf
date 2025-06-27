@@ -25,5 +25,7 @@ process METABAT2 {
     stub:
     """
     mkdir ${sid}_bins
+    touch ${sid}_bins/${sid}_1.fa
+    touch ${sid}_bins/${sid}_2.fa
     """
 }
