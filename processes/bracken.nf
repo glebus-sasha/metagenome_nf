@@ -16,7 +16,7 @@ process BRACKEN {
     
     script:
     """
-    bracken -d $database -i $kraken_report -o ${sid}_bracken_result.txt -r 100 -l S
+    bracken -d $database -i $kraken_report -o ${sid}_bracken_result.txt -r 150 -l S
     """
 
     stub:
