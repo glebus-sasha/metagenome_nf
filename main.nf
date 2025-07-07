@@ -17,7 +17,6 @@ include { QUAST_CONTIGS                 } from './processes/quast_contigs.nf'
 include { QUAST_BIN                     } from './processes/quast_bin.nf'
 include { GTDBTK                        } from './processes/gtdbtk.nf'
 include { METAPHLAN                     } from './processes/metaphlan.nf'
-include { METAPHLAN_CONTIGS             } from './processes/metaphlan_contigs.nf'
 include { REPORT                        } from './processes/report.nf'
 include { COMPARE_ABUDANCE              } from './processes/compare_abundance.nf'
 include { COMPARE_ABUDANCE as COMPARE_ABUDANCE_CONTIGS   } from './processes/compare_abundance.nf'
@@ -29,6 +28,7 @@ include { CONVERT_KRAKEN as CONVERT_KRAKEN_CONTIGS       } from './processes/con
 include { CONVERT_GTDBTK                } from './processes/convert_gtdbtk.nf'
 include { CONVERT_BRACKEN               } from './processes/convert_bracken.nf'
 include { CONVERT_BRACKEN as CONVERT_BRACKEN_CONTIGS     } from './processes/convert_bracken.nf'
+include { COMPARE_ALL_VS_TRUTH          } from './processes/compare_all_vs_truth.nf'
 
 
 
@@ -81,7 +81,6 @@ workflow {
     KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
     KRAKEN2_CONTIGS(MEGAHIT.out.contigs, kraken2_db)
     METAPHLAN(TRIM.out.trimmed_reads, metaphlan_db)
-    METAPHLAN_CONTIGS(MEGAHIT.out.contigs, metaphlan_db)
     BRACKEN(KRAKEN2.out.report, kraken2_db)
     BRACKEN_CONTIGS(KRAKEN2_CONTIGS.out.report, kraken2_db)
     //KRONA(BRACKEN.out.txt)
@@ -98,14 +97,25 @@ workflow {
         mix(GTDBTK.out.tsv.map{it[1]})              |
         collect                                     |
         REPORT
-    COMPARE_ABUDANCE(truth_tax.join(KRAKEN2.out.result))
-    COMPARE_ABUDANCE_CONTIGS(truth_tax.join(KRAKEN2_CONTIGS.out.result))
+    //COMPARE_ABUDANCE(truth_tax.join(KRAKEN2.out.result))
+    //COMPARE_ABUDANCE_CONTIGS(truth_tax.join(KRAKEN2_CONTIGS.out.result))
     CONVERT_TRUTH(truth_tax)
-    CONVERT_KRAKEN(KRAKEN2.out.result)
-    CONVERT_KRAKEN_CONTIGS(KRAKEN2_CONTIGS.out.result)
-    CONVERT_BRACKEN(BRACKEN.out.txt)
-    CONVERT_BRACKEN_CONTIGS(BRACKEN_CONTIGS.out.txt)
+    CONVERT_KRAKEN(KRAKEN2.out.result, '')
+    CONVERT_KRAKEN_CONTIGS(KRAKEN2_CONTIGS.out.result, 'contigs-')
+    CONVERT_BRACKEN(BRACKEN.out.txt, '')
+    CONVERT_BRACKEN_CONTIGS(BRACKEN_CONTIGS.out.txt, 'contigs-')
     CONVERT_METAPHLAN(METAPHLAN.out.txt)
-    CONVERT_METAPHLAN_CONTIGS(METAPHLAN_CONTIGS.out.txt)
     CONVERT_GTDBTK(GTDBTK.out.tsv, ar122_file, bac120_file)
+    COMPARE_ALL_VS_TRUTH(
+        CONVERT_TRUTH.out
+        .join(CONVERT_KRAKEN.out)
+        .join(CONVERT_KRAKEN_CONTIGS.out)
+        .join(CONVERT_BRACKEN.out)
+        .join(CONVERT_BRACKEN_CONTIGS.out)
+        .join(CONVERT_METAPHLAN.out)
+        .join(CONVERT_GTDBTK.out)
+        .map {tuple(it[0], it[1..-1])},
+        'truth'
+        )
+
 }

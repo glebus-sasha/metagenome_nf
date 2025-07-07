@@ -7,18 +7,19 @@ process CONVERT_BRACKEN {
 
     input:
     tuple val(sid), path(bracken_file)
+    val(tag)
 
     output:
-    tuple val(sid), path("${sid}_bracken.csv")
+    tuple val(sid), path("${sid}_${tag}bracken.csv")
 
     
     script:
     """
-    convert_bracken.R $bracken_file ${sid}_bracken.csv
+    convert_bracken $bracken_file ${sid}_${tag}bracken.csv
     """
 
     stub:
     """
-    touch ${sid}_bracken.csv
+    touch ${sid}_${tag}bracken.csv 
     """
 }

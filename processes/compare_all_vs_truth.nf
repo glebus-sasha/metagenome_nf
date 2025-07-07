@@ -1,4 +1,4 @@
-process CONVERT_METAPHLAN {
+process COMPARE_ALL_VS_TRUTH {
     container 'glebusasha/compare_abundance:latest'
     tag { 
         sid.length() > 40 ? "${sid.take(20)}...${sid.takeRight(20)}" : sid
@@ -6,19 +6,21 @@ process CONVERT_METAPHLAN {
     //errorStrategy 'ignore'
 
     input:
-    tuple val(sid), path(metaphlan_file)
+    tuple val(sid), path(files)
+    val(truth_name)
 
     output:
-    tuple val(sid), path("${sid}_metaphlan.csv")
+    path "*"
 
     
     script:
     """
-    convert_metaphlan $metaphlan_file ${sid}_metaphlan.csv
+    ENTREZ_KEY='f89d1708ce9e895b603000a05f2d17113507'
+    compare_all_vs_truth . ${truth_name} $sid
     """
 
     stub:
     """
-    touch ${sid}_metaphlan.csv
+    mkdir results
     """
 }

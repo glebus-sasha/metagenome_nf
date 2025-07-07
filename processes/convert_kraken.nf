@@ -7,18 +7,19 @@ process CONVERT_KRAKEN {
 
     input:
     tuple val(sid), path(kraken_file)
+    val 'tag'
 
     output:
-    tuple val(sid), path("${sid}_kraken.csv")
+    tuple val(sid), path("${sid}_${tag}kraken.csv") 
 
     
     script:
     """
-    convert_kraken.R $kraken_file ${sid}_kraken.csv
+    convert_kraken $kraken_file ${sid}_${tag}kraken.csv
     """
 
     stub:
     """
-    touch ${sid}_kraken.csv
+    touch ${sid}_${tag}kraken.csv
     """
 }

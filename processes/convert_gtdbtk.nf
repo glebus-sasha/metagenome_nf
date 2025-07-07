@@ -16,7 +16,7 @@ process CONVERT_GTDBTK {
     
     script:
     """
-    convert_gtdbtk.R $gtdbtk_file $ar122_file $bac120_file ${sid}_gtdbtk.csv
+    convert_gtdbtk $gtdbtk_file $ar122_file $bac120_file ${sid}_gtdbtk.csv
     """
 
     stub:
