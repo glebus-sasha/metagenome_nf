@@ -22,6 +22,8 @@ input_fastqs        = Channel.fromFilePairs(["${params.reads}/*[rR]{1,2}*.*{fast
 metaphlan_db        = params.metaphlan_db ? Channel.fromPath("${params.metaphlan_db}").collect(): null
 
 workflow { 
+
+    main:
     input_fastqs          |
     QCONTROL & TRIM
     METAPHLAN(TRIM.out.trimmed_reads, metaphlan_db) |
@@ -32,5 +34,4 @@ workflow {
         mix(METAPHLAN.out.txt.map{it[1]})           |
         collect                                     |
         REPORT
-
 }
