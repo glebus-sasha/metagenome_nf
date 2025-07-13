@@ -1,4 +1,4 @@
-process COMPARE_ALL_VS_TRUTH {
+process METAPHLAN_RESULTS {
     container 'glebusasha/compare_abundance:latest'
     tag { 
         sid.length() > 40 ? "${sid.take(20)}...${sid.takeRight(20)}" : sid
@@ -6,21 +6,19 @@ process COMPARE_ALL_VS_TRUTH {
     //errorStrategy 'ignore'
 
     input:
-    tuple val(sid), path(files)
-    val(truth_name)
+    tuple val(sid), path(metaphlan_file)
 
     output:
-    path "*"
+    tuple val(sid), path("${sid}_taxonomy.csv")
 
     
     script:
     """
-    ENTREZ_KEY='f89d1708ce9e895b603000a05f2d17113507'
-    compare_all_vs_truth . ${truth_name} $sid    
+    metaphlan_results $metaphlan_file ${sid}_taxonomy.csv
     """
 
     stub:
     """
-    mkdir results
+    touch ${sid}_taxonomy.csv
     """
 }

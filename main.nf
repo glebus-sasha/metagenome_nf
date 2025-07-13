@@ -29,6 +29,7 @@ include { CONVERT_GTDBTK                } from './processes/convert_gtdbtk.nf'
 include { CONVERT_BRACKEN               } from './processes/convert_bracken.nf'
 include { CONVERT_BRACKEN as CONVERT_BRACKEN_CONTIGS     } from './processes/convert_bracken.nf'
 include { COMPARE_ALL_VS_TRUTH          } from './processes/compare_all_vs_truth.nf'
+include { METAPHLAN_RESULTS             } from './processes/metaphlan_results.nf'
 
 
 
@@ -67,7 +68,7 @@ workflow {
     MEGAHIT.out.contigs.join(ALIGN.out.bam) |
     METABAT2                                |
     CHECKM
-
+    /*
     METABAT2.out.bins |
         map { sid, bins_dir ->
             file(bins_dir).listFiles().findAll { it.name.endsWith('.fa') }.collect { bin_file ->
@@ -75,7 +76,7 @@ workflow {
             }
         }             |
         flatMap       |
-        QUAST_BIN
+        QUAST_BIN*/
 
     GTDBTK(METABAT2.out.bins, gtdbtk_db)
     KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
@@ -90,15 +91,12 @@ workflow {
         mix(QCONTROL.out.zip)                       |
         mix(KRAKEN2.out.report.map{it[1]})          |
         mix(KRAKEN2_CONTIGS.out.report.map{it[1]})  |
-        mix(QUAST_CONTIGS.out.quast_results)        |   
-        mix(QUAST_BIN.out.quast_results)            |
+        //mix(QUAST_CONTIGS.out.quast_results)        |   
+        //mix(QUAST_BIN.out.quast_results)            |
         mix(METAPHLAN.out.txt.map{it[1]})           |
-        //mix(METAPHLAN_CONTIGS.out.txt.map{it[1]})   |
         mix(GTDBTK.out.tsv.map{it[1]})              |
         collect                                     |
         REPORT
-    //COMPARE_ABUDANCE(truth_tax.join(KRAKEN2.out.result))
-    //COMPARE_ABUDANCE_CONTIGS(truth_tax.join(KRAKEN2_CONTIGS.out.result))
     CONVERT_TRUTH(truth_tax)
     CONVERT_KRAKEN(KRAKEN2.out.result, '')
     CONVERT_KRAKEN_CONTIGS(KRAKEN2_CONTIGS.out.result, 'contigs-')
@@ -117,5 +115,6 @@ workflow {
         .map {tuple(it[0], it[1..-1])},
         'truth'
         )
+    METAPHLAN_RESULTS(METAPHLAN.out.txt)
 
 }
