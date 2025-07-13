@@ -22,7 +22,6 @@ process KRAKEN2_CONTIGS {
         --report-zero-counts \
         --use-names \
         --minimum-base-quality 20 \
-        --threads ${task.cpus} \
         $contigs
     """
 

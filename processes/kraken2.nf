@@ -25,7 +25,6 @@ process KRAKEN2 {
     --paired \
     --minimum-base-quality 20 \
     --gzip-compressed \
-    --threads ${task.cpus} \
     ${reads1} ${reads2}
     """
 
