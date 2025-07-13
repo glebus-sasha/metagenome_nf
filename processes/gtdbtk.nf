@@ -19,7 +19,7 @@ process GTDBTK {
     """
     export GTDBTK_DATA_PATH=${db}
     gtdbtk classify_wf --genome_dir ${bins} --out_dir ${sid} --cpus ${task.cpus} --mash_db ${db} -x fa
-    mv ${sid}/classify/*.summary.tsv ${sid}.summary.tsv
+    cat ${sid}/classify/*.summary.tsv | awk 'NR==1 || FNR>1' > ${sid}.summary.tsv
     """
 
     stub:
