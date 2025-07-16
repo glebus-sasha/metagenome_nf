@@ -56,7 +56,14 @@ truth_tax           = Channel.fromPath("${params.truth_tax}/*.*tsv*").map { tupl
 ar122_file          = Channel.fromPath("${params.ar122_file}").collect()
 bac120_file         = Channel.fromPath("${params.bac120_file}").collect()
 
-workflow { 
+workflow FASTQ_TAXONOMY { 
+    take:
+    input_fastqs
+    kraken2_db
+    gtdbtk_db
+    metaphlan_db
+   
+    main:
     input_fastqs          |
     QCONTROL & TRIM
 
@@ -68,7 +75,6 @@ workflow {
     MEGAHIT.out.contigs.join(ALIGN.out.bam) |
     METABAT2                                |
     CHECKM
-    /*
     METABAT2.out.bins |
         map { sid, bins_dir ->
             file(bins_dir).listFiles().findAll { it.name.endsWith('.fa') }.collect { bin_file ->
@@ -76,7 +82,7 @@ workflow {
             }
         }             |
         flatMap       |
-        QUAST_BIN*/
+        QUAST_BIN
 
     GTDBTK(METABAT2.out.bins, gtdbtk_db)
     KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
@@ -87,23 +93,44 @@ workflow {
     //KRONA(BRACKEN.out.txt)
     //KRONA_CONTIGS(BRACKEN_CONTIGS.out.txt)
     KRONA_METAPHLAN(METAPHLAN.out.txt)
-    TRIM.out.json                                   |
-        mix(QCONTROL.out.zip)                       |
-        mix(KRAKEN2.out.report.map{it[1]})          |
-        mix(KRAKEN2_CONTIGS.out.report.map{it[1]})  |
-        //mix(QUAST_CONTIGS.out.quast_results)        |   
-        //mix(QUAST_BIN.out.quast_results)            |
-        mix(METAPHLAN.out.txt.map{it[1]})           |
-        mix(GTDBTK.out.tsv.map{it[1]})              |
-        collect                                     |
-        REPORT
+    METAPHLAN_RESULTS(METAPHLAN.out.txt)
+
+    emit:
+    fastqc              = QCONTROL.out.zip
+    kreport             = KRAKEN2.out.report
+    kresault            = KRAKEN2.out.result
+    kresault_contigs    = KRAKEN2_CONTIGS.out.result
+    kreport_contigs     = KRAKEN2_CONTIGS.out.report
+    quast               = QUAST_CONTIGS.out.quast_results
+    bracken             = BRACKEN.out.txt
+    bracken_contigs     = BRACKEN_CONTIGS.out.txt
+    quast_bin           = QUAST_BIN.out.quast_results
+    metaphlan           = METAPHLAN.out.txt
+    gtdbtk              = GTDBTK.out.tsv
+    metaphlan           = METAPHLAN.out.txt
+
+}
+
+workflow compare_taxonomy {
+    take:
+    truth_tax
+    ar122_file
+    bac120_file
+    kresault
+    kresault_contigs
+    bracken
+    bracken_contigs
+    metaphlan
+    gtdbtk
+    
+    main:
     CONVERT_TRUTH(truth_tax)
-    CONVERT_KRAKEN(KRAKEN2.out.result, '')
-    CONVERT_KRAKEN_CONTIGS(KRAKEN2_CONTIGS.out.result, 'contigs-')
-    CONVERT_BRACKEN(BRACKEN.out.txt, '')
-    CONVERT_BRACKEN_CONTIGS(BRACKEN_CONTIGS.out.txt, 'contigs-')
-    CONVERT_METAPHLAN(METAPHLAN.out.txt)
-    CONVERT_GTDBTK(GTDBTK.out.tsv, ar122_file, bac120_file)
+    CONVERT_KRAKEN(kresault, '')
+    CONVERT_KRAKEN_CONTIGS(kresault_contigs, 'contigs-')
+    CONVERT_BRACKEN(bracken, '')
+    CONVERT_BRACKEN_CONTIGS(bracken_contigs, 'contigs-')
+    CONVERT_METAPHLAN(metaphlan)
+    CONVERT_GTDBTK(gtdbtk, ar122_file, bac120_file)
     COMPARE_ALL_VS_TRUTH(
         CONVERT_TRUTH.out
         .join(CONVERT_KRAKEN.out)
@@ -114,7 +141,38 @@ workflow {
         .join(CONVERT_GTDBTK.out)
         .map {tuple(it[0], it[1..-1])},
         'truth'
-        )
-    METAPHLAN_RESULTS(METAPHLAN.out.txt)
+    )
+}
 
+workflow {
+    FASTQ_TAXONOMY(
+        input_fastqs,
+        kraken2_db,
+        gtdbtk_db,
+        metaphlan_db
+    )
+    
+    /*compare_taxonomy(
+        truth_tax,
+        ar122_file,
+        bac120_file,
+        FASTQ_TAXONOMY.out.kresault,
+        FASTQ_TAXONOMY.out.kresault_contigs,
+        FASTQ_TAXONOMY.out.bracken,
+        FASTQ_TAXONOMY.out.bracken_contigs,
+        FASTQ_TAXONOMY.out.metaphlan,
+        FASTQ_TAXONOMY.out.gtdbtk
+    )*/
+
+    REPORT(
+        FASTQ_TAXONOMY.out.fastqc.map{it[0]}                    |
+            mix(FASTQ_TAXONOMY.out.fastqc.map{it[0]})           |
+            mix(FASTQ_TAXONOMY.out.kreport.map{it[0]})          |
+            mix(FASTQ_TAXONOMY.out.kreport_contigs.map{it[0]})  |
+            mix(FASTQ_TAXONOMY.out.quast)                       |
+            mix(FASTQ_TAXONOMY.out.quast_bin)                   |
+            mix(FASTQ_TAXONOMY.out.metaphlan.map{it[0]})        |
+            mix(FASTQ_TAXONOMY.out.gtdbtk.map{it[0]})           |
+            collect
+    )
 }
