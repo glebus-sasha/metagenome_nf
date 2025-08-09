@@ -12,13 +12,15 @@ process HUMANN {
     path metaphlan_database
 
     output:
-    path "*"
+    tuple val(sid), path("${sid}_genefamilies.tsv")
+    tuple val(sid), path("${sid}_pathabundance.tsv")
+    tuple val(sid), path("${sid}_pathcoverage.tsv")
 
     script:
     """
     humann \
         --input $reads \
-        --output humann_out \
+        --output . \
         --nucleotide-database $nucleotide_database \
         --protein-database $protein_database \
         --metaphlan-options "--bowtie2db $metaphlan_database" \
@@ -27,6 +29,8 @@ process HUMANN {
 
     stub:
     """
-
+    touch ${sid}_genefamilies.tsv
+    touch ${sid}_pathabundance.tsv
+    touch ${sid}_pathcoverage.tsv
     """
 }

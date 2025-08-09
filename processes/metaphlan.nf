@@ -1,5 +1,5 @@
 process METAPHLAN {
-    container 'staphb/metaphlan:4.1.1'
+    container 'staphb/metaphlan-4.1.1'
     tag "${sid}"
     errorStrategy 'ignore'
     cpus params.cpus
@@ -9,7 +9,9 @@ process METAPHLAN {
     path database
     
     output:
-    tuple val(sid), path("${sid}.txt"), emit: txt
+    tuple val(sid), path("${sid}.txt")          , emit: txt
+    tuple val(sid), path("${sid}.bowtie2.bz2")  , emit: bowtie2
+    tuple val(sid), path("${sid}.sam.bz2")      , emit: sam_bz
     
     script:
     """
@@ -17,6 +19,7 @@ process METAPHLAN {
         --input_type fastq \
         --bowtie2db $database \
         --bowtie2out ${sid}.bowtie2.bz2 \
+        --samout ${sid}.sam.bz2 \
         --nproc ${task.cpus} \
         -o ${sid}.txt
     """
@@ -24,5 +27,7 @@ process METAPHLAN {
     stub:
     """
     touch ${sid}.txt
+    touch ${sid}.bowtie2.bz2
+    touch ${sid}.sam.bz2
     """
 }

@@ -20,6 +20,9 @@ include { METAPHLAN                     } from '../processes/metaphlan.nf'
 include { METAPHLAN_RESULTS             } from '../processes/metaphlan_results.nf'
 include { KNEADDATA                     } from '../processes/kneaddata.nf'
 include { HUMANN                        } from '../processes/humann.nf'
+include { ALPHA_DIV                     } from '../processes/alpha_div.nf'
+include { SAMPLE2MAKERS                 } from '../processes/sample2markers.nf'
+include { STRAINPHLAN                   } from '../processes/strainphlan.nf'
 
 
 workflow FASTQ_TAXONOMY { 
@@ -40,14 +43,14 @@ workflow FASTQ_TAXONOMY {
     KNEADDATA(TRIM.out.trimmed_reads, kneaddata_database)
     HUMANN(KNEADDATA.out, nucleotide_database, protein_database, metaphlan_db_old)
 
-    MEGAHIT(TRIM.out.trimmed_reads) 
+    MEGAHIT(TRIM.out.trimmed_reads)
     QUAST_CONTIGS(MEGAHIT.out.contigs)
 
     TRIM.out.trimmed_reads.join(MEGAHIT.out.contigs) |
-    ALIGN
+        ALIGN
     MEGAHIT.out.contigs.join(ALIGN.out.bam) |
     METABAT2                                |
-    CHECKM
+        CHECKM
     METABAT2.out.bins |
         map { sid, bins_dir ->
             file(bins_dir).listFiles().findAll { it.name.endsWith('.fa') }.collect { bin_file ->
@@ -61,7 +64,11 @@ workflow FASTQ_TAXONOMY {
     KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
     KRAKEN2_CONTIGS(MEGAHIT.out.contigs, kraken2_db)
     METAPHLAN(TRIM.out.trimmed_reads, metaphlan_db)
+    SAMPLE2MAKERS(METAPHLAN.out.sam_bz, metaphlan_db)
+    STRAINPHLAN(SAMPLE2MAKERS.out)
+
     BRACKEN(KRAKEN2.out.report, kraken2_db)
+    ALPHA_DIV(BRACKEN.out.txt)
     BRACKEN_CONTIGS(KRAKEN2_CONTIGS.out.report, kraken2_db)
     //KRONA(BRACKEN.out.txt)
     //KRONA_CONTIGS(BRACKEN_CONTIGS.out.txt)
@@ -80,5 +87,4 @@ workflow FASTQ_TAXONOMY {
     quast_bin           = QUAST_BIN.out.quast_results
     metaphlan           = METAPHLAN.out.txt
     gtdbtk              = GTDBTK.out.tsv
-    metaphlan           = METAPHLAN.out.txt
 }
