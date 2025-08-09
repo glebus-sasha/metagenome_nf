@@ -25,12 +25,12 @@ workflow {
     main:
     input_fastqs          |
     QCONTROL & TRIM
-//    METAPHLAN(TRIM.out.trimmed_reads, metaphlan_db) |
-//    METAPHLAN_RESULTS
+    METAPHLAN(TRIM.out.trimmed_reads, metaphlan_db) |
+    METAPHLAN_RESULTS
 
     TRIM.out.json                                   |
         mix(QCONTROL.out.zip)                       |
-//        mix(METAPHLAN.out.txt.map{it[1]})           |
+        mix(METAPHLAN.out.txt.map{it[1]})           |
         collect                                     |
         REPORT
 }
