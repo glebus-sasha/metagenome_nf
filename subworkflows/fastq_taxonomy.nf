@@ -40,8 +40,8 @@ workflow FASTQ_TAXONOMY {
     input_fastqs          |
     QCONTROL & TRIM 
     
-    KNEADDATA(TRIM.out.trimmed_reads, kneaddata_database)
-    HUMANN(KNEADDATA.out, nucleotide_database, protein_database, metaphlan_db_old)
+    //KNEADDATA(TRIM.out.trimmed_reads, kneaddata_database)
+    //HUMANN(KNEADDATA.out, nucleotide_database, protein_database, metaphlan_db_old)
 
     MEGAHIT(TRIM.out.trimmed_reads)
     QUAST_CONTIGS(MEGAHIT.out.contigs)
@@ -65,7 +65,7 @@ workflow FASTQ_TAXONOMY {
     KRAKEN2_CONTIGS(MEGAHIT.out.contigs, kraken2_db)
     METAPHLAN(TRIM.out.trimmed_reads, metaphlan_db)
     SAMPLE2MAKERS(METAPHLAN.out.sam_bz, metaphlan_db)
-    STRAINPHLAN(SAMPLE2MAKERS.out)
+    //STRAINPHLAN(SAMPLE2MAKERS.out)
 
     BRACKEN(KRAKEN2.out.report, kraken2_db)
     ALPHA_DIV(BRACKEN.out.txt)
