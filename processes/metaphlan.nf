@@ -1,6 +1,8 @@
 process METAPHLAN {
     container 'staphb/metaphlan:4.1.1'
-    tag "${sid}"
+    tag { 
+        sid.length() > 40 ? "${sid.take(20)}...${sid.takeRight(20)}" : sid
+    }
     errorStrategy 'ignore'
     cpus params.cpus
     
