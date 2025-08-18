@@ -54,12 +54,12 @@ workflow {
 
     REPORT(
         FASTQ_TAXONOMY.out.fastqc.map{it[1]}                    |
-            mix(FASTQ_TAXONOMY.out.kreport.map{it[1]})          |
+            /*mix(FASTQ_TAXONOMY.out.kreport.map{it[1]})          |
             mix(FASTQ_TAXONOMY.out.kreport_contigs.map{it[1]})  |
             mix(FASTQ_TAXONOMY.out.quast)                       |
             mix(FASTQ_TAXONOMY.out.quast_bin)                   |
             mix(FASTQ_TAXONOMY.out.metaphlan.map{it[1]})        |
-            mix(FASTQ_TAXONOMY.out.gtdbtk.map{it[1]})           |
+            mix(FASTQ_TAXONOMY.out.gtdbtk.map{it[1]})           |*/
             collect
     )
 }
