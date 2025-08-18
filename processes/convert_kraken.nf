@@ -7,7 +7,7 @@ process CONVERT_KRAKEN {
 
     input:
     tuple val(sid), path(kraken_file)
-    val 'tag'
+    val tag
 
     output:
     tuple val(sid), path("${sid}_${tag}kraken.csv") 
