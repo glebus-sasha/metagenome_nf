@@ -1,9 +1,6 @@
 // Define the `TRIM` process that performs quality trimming and filtering of reads
 process TRIM{
     container 'nanozoo/fastp:0.23.1--9f2e255'
-    tag { 
-        sid.length() > 40 ? "${sid.take(20)}...${sid.takeRight(20)}" : sid
-    }
     errorStrategy 'ignore'
 
     input:

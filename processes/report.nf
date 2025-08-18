@@ -1,6 +1,5 @@
 process REPORT {
     container 'staphb/multiqc:latest'
-    tag "all samples"
     errorStrategy 'ignore'
     	
     input:
