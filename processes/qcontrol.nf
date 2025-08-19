@@ -4,7 +4,7 @@ process QCONTROL{
     errorStrategy 'ignore'
 
     input:
-    tuple val(sid), path(reads)
+    tuple val(_is_single_end), val(sid), path(reads)
 
     output:
     path "*.html",  emit: html

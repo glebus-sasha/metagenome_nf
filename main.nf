@@ -19,12 +19,18 @@ workflow {
         """
         .stripIndent(true)
 
-    input_fastqs        = Channel.fromFilePairs(["${params.reads}/*[rR]{1,2}*.*{fastq,fq}*", "${params.reads}/*_{1,2}.{fastq,fq}*"])
-    metaphlan_db        = params.metaphlan_db ? Channel.fromPath("${params.metaphlan_db}").collect(): null
+    input_fastqs = Channel.fromFilePairs([
+        "${params.reads}/*[rR]{1,2}*.{fastq,fq}*",
+        "${params.reads}/*_{1,2}.{fastq,fq}*",
+        "${params.reads}/*.{fastq,fq}*"
+    ], size: -1).map { sid, reads -> 
+            def is_single_end = reads.size() == 1
+            [is_single_end, sid, reads]
+        }
+    metaphlan_db        = Channel.fromPath("${params.metaphlan_db}")
 
-
-    input_fastqs          |
-    QCONTROL & TRIM
+    QCONTROL(input_fastqs)
+    TRIM(input_fastqs)
     METAPHLAN(TRIM.out.trimmed_reads, metaphlan_db) |
     METAPHLAN_RESULTS
 

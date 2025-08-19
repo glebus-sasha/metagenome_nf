@@ -4,15 +4,16 @@ process METAPHLAN {
     cpus params.cpus
     
     input:
-    tuple val(sid), path(reads1), path(reads2)
+    tuple val(is_single_end), val(sid), path(reads)
     path database
     
     output:
     tuple val(sid), path("${sid}.txt"), emit: txt
     
     script:
+    def input_files = is_single_end ? "${reads}" : "${reads[0]},${reads[1]}"
     """
-    metaphlan $reads1,$reads2 \
+    metaphlan $input_files \
         --input_type fastq \
         --bowtie2db $database \
         --bowtie2out ${sid}.bowtie2.bz2 \
