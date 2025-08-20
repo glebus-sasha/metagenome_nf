@@ -5,6 +5,11 @@ include { METAPHLAN                     } from './processes/metaphlan.nf'
 include { REPORT                        } from './processes/report.nf'
 include { METAPHLAN_RESULTS             } from './processes/metaphlan_results.nf'
 
+include { KRAKEN2                       } from './processes/kraken2.nf'
+include { BRACKEN                       } from './processes/bracken.nf'
+include { UNIFY_RESULTS                 } from './processes/unify_results.nf'
+
+
 workflow { 
 
     // Logging pipeline information
@@ -26,17 +31,38 @@ workflow {
     ], size: -1).map { sid, reads -> 
             def is_single_end = reads.size() == 1
             [is_single_end, sid, reads]
-        }
-    metaphlan_db        = Channel.fromPath("${params.metaphlan_db}")
+        }.first()
 
+    metaphlan_db        = Channel.fromPath("${params.metaphlan_db}")
+    kraken2_db        = Channel.fromPath("${params.kraken2_db}")
+    
     QCONTROL(input_fastqs)
     TRIM(input_fastqs)
     METAPHLAN(TRIM.out.trimmed_reads, metaphlan_db) |
     METAPHLAN_RESULTS
+    
+    is_empty = METAPHLAN_RESULTS.out.splitCsv().toList().map { it.isEmpty() }
 
-    TRIM.out.json                                   |
-        mix(QCONTROL.out.zip)                       |
-        mix(METAPHLAN.out.txt.map{it[1]})           |
-        collect                                     |
+    // Разделяем на две ветки
+    is_empty.branch { empty ->
+        empty: empty
+        non_empty: !empty
+    }.set { check_result }
+
+    // Для непустых результатов
+    check_result.non_empty.map { METAPHLAN_RESULTS.out }.set { metaphlan_results }
+
+    // Для пустых результатов
+    check_result.empty.set { empty_trigger }
+    KRAKEN2(input_fastqs, kraken2_db, empty_trigger)
+    BRACKEN(KRAKEN2.out.report, kraken2_db)
+
+    // Собираем результаты
+    final_results = metaphlan_results.mix(BRACKEN.out)
+    UNIFY_RESULTS(final_results)
+
+    TRIM.out.json |
+        mix(QCONTROL.out.zip) |
+        collect |
         REPORT
 }

@@ -1,9 +1,5 @@
-// Define the `BRACKEN` process that performs taxonomy analysis
 process BRACKEN {
     container 'staphb/bracken:latest'
-    tag { 
-        sid.length() > 40 ? "${sid.take(20)}...${sid.takeRight(20)}" : sid
-    }
     errorStrategy 'ignore'
     
     input:
