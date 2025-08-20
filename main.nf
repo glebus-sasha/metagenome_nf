@@ -41,7 +41,7 @@ workflow {
     METAPHLAN(TRIM.out.trimmed_reads, metaphlan_db) |
     METAPHLAN_RESULTS
     
-    is_empty = METAPHLAN_RESULTS.out.splitCsv().toList().map { it.isEmpty() }
+    is_empty = METAPHLAN_RESULTS.out.splitCsv(header: true).toList().map { it.isEmpty() }
 
     is_empty.branch { empty ->
         empty: empty
