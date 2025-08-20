@@ -6,6 +6,7 @@ process UNIFY_RESULTS {
     
     output:
     tuple val(sid), path("${sid}_final_profile.csv")
+    
     script:
     """
     # Определяем по первой строке - если есть табы, то это Bracken

@@ -33,7 +33,7 @@ workflow {
             [is_single_end, sid, reads]
         }.first()
 
-    metaphlan_db        = Channel.fromPath("${params.metaphlan_db}")
+    metaphlan_db      = Channel.fromPath("${params.metaphlan_db}")
     kraken2_db        = Channel.fromPath("${params.kraken2_db}")
     
     QCONTROL(input_fastqs)
@@ -52,7 +52,8 @@ workflow {
     KRAKEN2(input_fastqs, kraken2_db, empty_trigger)
     BRACKEN(KRAKEN2.out.report, kraken2_db)
 
-    final_results = METAPHLAN_RESULTS.out.mix(BRACKEN.out)
+    metaphlan_results = check_result.empty ? Channel.empty() : METAPHLAN_RESULTS.out
+    final_results = metaphlan_results.mix(BRACKEN.out)
     UNIFY_RESULTS(final_results)
 
     TRIM.out.json |
