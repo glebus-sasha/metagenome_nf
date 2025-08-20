@@ -61,10 +61,10 @@ workflow FASTQ_TAXONOMY {
         QUAST_BIN & ANTISMASH
 
     GTDBTK(METABAT2.out.bins, gtdbtk_db)*/
-    /*KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
-    KRAKEN2_CONTIGS(MEGAHIT.out.contigs, kraken2_db)*/
+    KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
+    /*KRAKEN2_CONTIGS(MEGAHIT.out.contigs, kraken2_db)
     METAPHLAN(TRIM.out.trimmed_reads, metaphlan_db)
-    /*SAMPLE2MAKERS(METAPHLAN.out.sam_bz, metaphlan_db)
+    SAMPLE2MAKERS(METAPHLAN.out.sam_bz, metaphlan_db)
     //STRAINPHLAN(SAMPLE2MAKERS.out)*/
 
     //BRACKEN(KRAKEN2.out.report, kraken2_db)
@@ -72,8 +72,8 @@ workflow FASTQ_TAXONOMY {
     BRACKEN_CONTIGS(KRAKEN2_CONTIGS.out.report, kraken2_db)
     //KRONA(BRACKEN.out.txt)
     //KRONA_CONTIGS(BRACKEN_CONTIGS.out.txt)
-    KRONA_METAPHLAN(METAPHLAN.out.txt)*/
-    METAPHLAN_RESULTS(METAPHLAN.out.txt)
+    KRONA_METAPHLAN(METAPHLAN.out.txt)
+    METAPHLAN_RESULTS(METAPHLAN.out.txt)*/
 
     emit:
     fastqc              = QCONTROL.out.zip
