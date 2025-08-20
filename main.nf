@@ -43,22 +43,16 @@ workflow {
     
     is_empty = METAPHLAN_RESULTS.out.splitCsv().toList().map { it.isEmpty() }
 
-    // Разделяем на две ветки
     is_empty.branch { empty ->
         empty: empty
         non_empty: !empty
     }.set { check_result }
 
-    // Для непустых результатов
-    check_result.non_empty.map { METAPHLAN_RESULTS.out }.set { metaphlan_results }
-
-    // Для пустых результатов
     check_result.empty.set { empty_trigger }
     KRAKEN2(input_fastqs, kraken2_db, empty_trigger)
     BRACKEN(KRAKEN2.out.report, kraken2_db)
 
-    // Собираем результаты
-    final_results = metaphlan_results.mix(BRACKEN.out)
+    final_results = METAPHLAN_RESULTS.out.mix(BRACKEN.out)
     UNIFY_RESULTS(final_results)
 
     TRIM.out.json |
