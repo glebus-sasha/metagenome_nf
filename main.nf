@@ -58,7 +58,6 @@ workflow {
 
     // Объединяем каналы
     final_results = metaphlan_channel.mix(bracken_channel).map{[it[1], it[2]]}
-final_results.view()
     UNIFY_RESULTS(final_results)
 
 
