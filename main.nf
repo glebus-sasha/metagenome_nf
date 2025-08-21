@@ -52,9 +52,15 @@ workflow {
     KRAKEN2(input_fastqs, kraken2_db, empty_trigger)
     BRACKEN(KRAKEN2.out.report, kraken2_db)
 
-    metaphlan_results = check_result.empty ? Channel.empty() : METAPHLAN_RESULTS.out
-    final_results = metaphlan_results.mix(BRACKEN.out)
+    // Правильное создание каналов
+    metaphlan_channel = check_result.non_empty.combine(METAPHLAN_RESULTS.out)
+    bracken_channel = check_result.empty.combine(BRACKEN.out)
+
+    // Объединяем каналы
+    final_results = metaphlan_channel.mix(bracken_channel).map{[it[1], it[2]]}
+final_results.view()
     UNIFY_RESULTS(final_results)
+
 
     TRIM.out.json |
         mix(QCONTROL.out.zip) |
