@@ -25,7 +25,7 @@ include { SAMPLE2MAKERS                 } from '../processes/sample2markers.nf'
 include { STRAINPHLAN                   } from '../processes/strainphlan.nf'
 
 
-workflow FASTQ_TAXONOMY { 
+workflow FASTQ_TAXONOMY_DEV { 
     take:
     input_fastqs
     kraken2_db
@@ -40,10 +40,10 @@ workflow FASTQ_TAXONOMY {
     input_fastqs          |
     QCONTROL & TRIM 
     
-    //KNEADDATA(TRIM.out.trimmed_reads, kneaddata_database)
-    //HUMANN(KNEADDATA.out, nucleotide_database, protein_database, metaphlan_db_old)
+    KNEADDATA(TRIM.out.trimmed_reads, kneaddata_database)
+    HUMANN(KNEADDATA.out, nucleotide_database, protein_database, metaphlan_db_old)
 
-    /*MEGAHIT(TRIM.out.trimmed_reads)
+    MEGAHIT(TRIM.out.trimmed_reads)
     QUAST_CONTIGS(MEGAHIT.out.contigs)
 
     TRIM.out.trimmed_reads.join(MEGAHIT.out.contigs) |
@@ -62,22 +62,22 @@ workflow FASTQ_TAXONOMY {
 
     GTDBTK(METABAT2.out.bins, gtdbtk_db)*/
     KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
-    /*KRAKEN2_CONTIGS(MEGAHIT.out.contigs, kraken2_db)
+    KRAKEN2_CONTIGS(MEGAHIT.out.contigs, kraken2_db)
     METAPHLAN(TRIM.out.trimmed_reads, metaphlan_db)
     SAMPLE2MAKERS(METAPHLAN.out.sam_bz, metaphlan_db)
-    //STRAINPHLAN(SAMPLE2MAKERS.out)*/
+    STRAINPHLAN(SAMPLE2MAKERS.out)
 
-    //BRACKEN(KRAKEN2.out.report, kraken2_db)
-    /*ALPHA_DIV(BRACKEN.out.txt)
+    BRACKEN(KRAKEN2.out.report, kraken2_db)
+    ALPHA_DIV(BRACKEN.out.txt)
     BRACKEN_CONTIGS(KRAKEN2_CONTIGS.out.report, kraken2_db)
-    //KRONA(BRACKEN.out.txt)
-    //KRONA_CONTIGS(BRACKEN_CONTIGS.out.txt)
+    KRONA(BRACKEN.out.txt)
+    KRONA_CONTIGS(BRACKEN_CONTIGS.out.txt)
     KRONA_METAPHLAN(METAPHLAN.out.txt)
-    METAPHLAN_RESULTS(METAPHLAN.out.txt)*/
+    METAPHLAN_RESULTS(METAPHLAN.out.txt)
 
     emit:
     fastqc              = QCONTROL.out.zip
-/*    kreport             = KRAKEN2.out.report
+    kreport             = KRAKEN2.out.report
     kresault            = KRAKEN2.out.result
     kresault_contigs    = KRAKEN2_CONTIGS.out.result
     kreport_contigs     = KRAKEN2_CONTIGS.out.report
@@ -86,5 +86,5 @@ workflow FASTQ_TAXONOMY {
     bracken_contigs     = BRACKEN_CONTIGS.out.txt
     quast_bin           = QUAST_BIN.out.quast_results
     metaphlan           = METAPHLAN.out.txt
-    gtdbtk              = GTDBTK.out.tsv*/
+    gtdbtk              = GTDBTK.out.tsv
 }

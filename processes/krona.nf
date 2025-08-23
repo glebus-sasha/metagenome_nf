@@ -4,7 +4,6 @@ process KRONA {
     tag { 
         sid.length() > 40 ? "${sid.take(20)}...${sid.takeRight(20)}" : sid
     }
-    publishDir = [path: { "${params.outdir}/${workflow.start.format('yyyy-MM-dd_HH-mm-ss')}_${params.launch_name}/${task.process.toLowerCase()}" }, mode: 'copy']
     errorStrategy 'ignore'
     
     input:
