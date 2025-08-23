@@ -1,90 +1,71 @@
-include { QCONTROL                      } from '../processes/qcontrol.nf'
-include { TRIM                          } from '../processes/trim.nf'
-include { KRAKEN2                       } from '../processes/kraken2.nf'
-include { KRAKEN2_CONTIGS               } from '../processes/kraken2_contigs.nf'
-include { BRACKEN                       } from '../processes/bracken.nf'
-include { BRACKEN as BRACKEN_CONTIGS    } from '../processes/bracken.nf'
-include { KRONA                         } from '../processes/krona.nf'
-include { KRONA as KRONA_CONTIGS        } from '../processes/krona.nf'
-include { KRONA_METAPHLAN               } from '../processes/krona_metaphlan.nf'
-include { METASPADES                    } from '../processes/metaspades.nf'
-include { MEGAHIT                       } from '../processes/megahit.nf'
-include { ALIGN                         } from '../processes/align.nf'
-include { METABAT2                      } from '../processes/metabat2.nf'
-include { CHECKM                        } from '../processes/checkm.nf'
-include { QUAST_CONTIGS                 } from '../processes/quast_contigs.nf'
-include { QUAST_BIN                     } from '../processes/quast_bin.nf'
-include { GTDBTK                        } from '../processes/gtdbtk.nf'
-include { ANTISMASH                     } from '../processes/antismash.nf'
-include { METAPHLAN                     } from '../processes/metaphlan.nf'
-include { METAPHLAN_RESULTS             } from '../processes/metaphlan_results.nf'
-include { KNEADDATA                     } from '../processes/kneaddata.nf'
-include { HUMANN                        } from '../processes/humann.nf'
-include { ALPHA_DIV                     } from '../processes/alpha_div.nf'
-include { SAMPLE2MAKERS                 } from '../processes/sample2markers.nf'
-include { STRAINPHLAN                   } from '../processes/strainphlan.nf'
+include { FASTQC                        } from '../modules/nf-core/fastqc'
+include { FASTP                         } from '../modules/nf-core/fastp'
+include { KRAKEN2_KRAKEN2               } from '../modules/nf-core/kraken2/kraken2'
+include { BRACKEN_BRACKEN               } from '../modules/nf-core/bracken/bracken'
 
 
 workflow FASTQ_TAXONOMY_PROD { 
     take:
     input_fastqs
     kraken2_db
-    gtdbtk_db
     metaphlan_db
-    metaphlan_db_old
-    kneaddata_database
-    nucleotide_database
-    protein_database
    
     main:
-    input_fastqs          |
-    QCONTROL & TRIM 
+
+    ch_versions = Channel.empty()
+    ch_multiqc_files = Channel.empty()
+    //
+    // MODULE: Run FastQC
+    //
+    FASTQC (
+        input_fastqs
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
+    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+    //
+    // MODULE: Run FastP
+    //
+    FASTP (
+        input_fastqs,
+        [],
+        [],
+        false,
+        false
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(FASTP.out.json.collect{it[1]})
+    ch_versions = ch_versions.mix(FASTP.out.versions.first())
+    //
+    // MODULE: Run Kraken2
+    //
+    KRAKEN2_KRAKEN2 (
+        FASTP.out.reads,
+        kraken2_db,
+        false,
+        false
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(KRAKEN2_KRAKEN2.out.report.collect{it[1]})
+    ch_versions = ch_versions.mix(KRAKEN2_KRAKEN2.out.versions.first())
+    //
+    // MODULE: Run Bracken
+    //
+    BRACKEN_BRACKEN (
+        KRAKEN2_KRAKEN2.out.report,
+        kraken2_db
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(BRACKEN_BRACKEN.out.reports.collect{it[1]})
+    ch_versions = ch_versions.mix(KRAKEN2_KRAKEN2.out.versions.first())
     
-    //KNEADDATA(TRIM.out.trimmed_reads, kneaddata_database)
-    //HUMANN(KNEADDATA.out, nucleotide_database, protein_database, metaphlan_db_old)
-
-    /*MEGAHIT(TRIM.out.trimmed_reads)
-    QUAST_CONTIGS(MEGAHIT.out.contigs)
-
-    TRIM.out.trimmed_reads.join(MEGAHIT.out.contigs) |
-        ALIGN
-    MEGAHIT.out.contigs.join(ALIGN.out.bam) |
-    METABAT2                                |
-        CHECKM
-    METABAT2.out.bins |
-        map { sid, bins_dir ->
-            file(bins_dir).listFiles().findAll { it.name.endsWith('.fa') }.collect { bin_file ->
-                [sid, bin_file]
-            }
-        }             |
-        flatMap       |
-        QUAST_BIN & ANTISMASH
-
-    GTDBTK(METABAT2.out.bins, gtdbtk_db)*/
+    /*input_fastqs          |
+    QCONTROL & TRIM 
     KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
-    /*KRAKEN2_CONTIGS(MEGAHIT.out.contigs, kraken2_db)
     METAPHLAN(TRIM.out.trimmed_reads, metaphlan_db)
-    SAMPLE2MAKERS(METAPHLAN.out.sam_bz, metaphlan_db)
-    //STRAINPHLAN(SAMPLE2MAKERS.out)*/
-
-    //BRACKEN(KRAKEN2.out.report, kraken2_db)
-    /*ALPHA_DIV(BRACKEN.out.txt)
-    BRACKEN_CONTIGS(KRAKEN2_CONTIGS.out.report, kraken2_db)
-    //KRONA(BRACKEN.out.txt)
-    //KRONA_CONTIGS(BRACKEN_CONTIGS.out.txt)
-    KRONA_METAPHLAN(METAPHLAN.out.txt)
-    METAPHLAN_RESULTS(METAPHLAN.out.txt)*/
+    BRACKEN(KRAKEN2.out.report, kraken2_db)
+    METAPHLAN_RESULTS(METAPHLAN.out.txt)
 
     emit:
     fastqc              = QCONTROL.out.zip
-/*    kreport             = KRAKEN2.out.report
+    kreport             = KRAKEN2.out.report
     kresault            = KRAKEN2.out.result
-    kresault_contigs    = KRAKEN2_CONTIGS.out.result
-    kreport_contigs     = KRAKEN2_CONTIGS.out.report
-    quast               = QUAST_CONTIGS.out.quast_results
     bracken             = BRACKEN.out.txt
-    bracken_contigs     = BRACKEN_CONTIGS.out.txt
-    quast_bin           = QUAST_BIN.out.quast_results
-    metaphlan           = METAPHLAN.out.txt
-    gtdbtk              = GTDBTK.out.tsv*/
+    metaphlan           = METAPHLAN.out.txt*/
 }

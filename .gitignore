@@ -2,6 +2,7 @@
 .nextflow*
 work
 data
+test
 results
 path_config.py
 __pycache__ 
