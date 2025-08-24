@@ -13,8 +13,16 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+include { FASTQC                        } from './modules/nf-core/fastqc'
+include { FASTP                         } from './modules/nf-core/fastp'
+include { KRAKEN2_KRAKEN2               } from './modules/nf-core/kraken2/kraken2'
+include { BRACKEN_BRACKEN               } from './modules/nf-core/bracken/bracken'
+include { KREPORT2MPA                   } from './modules/local/kreport2mpa'
+include { BRACKEN_RESULTS               } from './modules/local/bracken_results'
+include { METAPHLAN_METAPHLAN           } from './modules/nf-core/metaphlan/metaphlan'
+include { METAPHLAN_RESULTS             } from './modules/local/metaphlan_results'
+include { softwareVersionsToYAML        } from './subworkflows/nf-core/utils_nfcore_pipeline'
 include { MULTIQC                       } from './modules/nf-core/multiqc'
-include { FASTQ_TAXONOMY_PROD           } from './workflows/fastq_taxonomy_prod.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,58 +51,62 @@ workflow {
             ]
         }
 
-    // input_fastqs        = Channel.fromFilePairs(["${params.reads}/*[rR]{1,2}*.*{fastq,fq}*", "${params.reads}/*_{1,2}.{fastq,fq}*"])
-    kraken2_db          = Channel.fromPath("${params.kraken2_db}").collect()
     metaphlan_db        = Channel.fromPath("${params.metaphlan_db}").collect()
 
-    /*
-    gtdbtk_db           = Channel.fromPath("${params.gtdbtk_db}").collect()
-    metaphlan_db_old    = Channel.fromPath("${params.metaphlan_db_old}").collect()
-    kneaddata_database  = Channel.fromPath("${params.kneaddata_database}").collect()
-    nucleotide_database = Channel.fromPath("${params.nucleotide_database}").collect()
-    protein_database    = Channel.fromPath("${params.protein_database}").collect()
-    truth_tax           = Channel.fromPath("${params.truth_tax}/*.*tsv*").map { tuple(it.baseName, it) }
-    ar122_file          = Channel.fromPath("${params.ar122_file}").collect()
-    bac120_file         = Channel.fromPath("${params.bac120_file}").collect()
-    */
-
-    FASTQ_TAXONOMY_PROD (
-        input_fastqs,
-        kraken2_db,
-        metaphlan_db
+    ch_versions = Channel.empty()
+    ch_multiqc_files = Channel.empty()
+    //
+    // MODULE: Run FastQC
+    //
+    FASTQC (
+        input_fastqs
     )
-    
-
-    /*
-    FASTQ_TAXONOMY_DEV (
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
+    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+    //
+    // MODULE: Run FastP
+    //
+    FASTP (
         input_fastqs,
-        kraken2_db,
-        gtdbtk_db,
+        [],
+        [],
+        false,
+        false
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(FASTP.out.json.collect{it[1]})
+    ch_versions = ch_versions.mix(FASTP.out.versions.first())
+    //
+    // MODULE: Run MetaPlAn
+    //
+    METAPHLAN_METAPHLAN (
+        FASTP.out.reads,
         metaphlan_db,
-        metaphlan_db_old,
-        kneaddata_database,
-        nucleotide_database,
-        protein_database
+        false
     )
-    */
+    ch_multiqc_files = ch_multiqc_files.mix(METAPHLAN_METAPHLAN.out.profile.collect{it[1]})
+    ch_versions = ch_versions.mix(METAPHLAN_METAPHLAN.out.versions.first())
+    //
+    // MODULE: Run MetaPlAn results
+    //
+    METAPHLAN_RESULTS (
+        METAPHLAN_METAPHLAN.out.profile
+    )
+    ch_versions = ch_versions.mix(METAPHLAN_RESULTS.out.versions.first())
+    //
+    // Collate and save software versions
+    //
+    softwareVersionsToYAML(ch_versions)
+        .collectFile(
+            storeDir: "${params.outdir}/pipeline_info",
+            name:  'metagenome_software_'  + 'mqc_'  + 'versions.yml',
+            sort: true,
+            newLine: true
+        ).set { ch_collated_versions }
 
-    /*
-    compare_taxonomy(
-        truth_tax,
-        ar122_file,
-        bac120_file,
-        FASTQ_TAXONOMY.out.kresault,
-        FASTQ_TAXONOMY.out.kresault_contigs,
-        FASTQ_TAXONOMY.out.bracken,
-        FASTQ_TAXONOMY.out.bracken_contigs,
-        FASTQ_TAXONOMY.out.metaphlan,
-        FASTQ_TAXONOMY.out.gtdbtk
-    )
-    */
     //
     // MODULE: MultiQC
     //
-    ch_multiqc_files = FASTQ_TAXONOMY_PROD.out.ch_multiqc_files.mix(FASTQ_TAXONOMY_PROD.out.ch_collated_versions)
+    ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
     MULTIQC (
         ch_multiqc_files.collect(),
         [],
