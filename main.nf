@@ -1,7 +1,32 @@
 #!/usr/bin/env nextflow
-include { REPORT                        } from './processes/report.nf'
-include { FASTQ_TAXONOMY_PROD           } from './subworkflows/fastq_taxonomy_prod.nf'
-include { compare_taxonomy              } from './workflows/compare_taxonomy.nf'
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    nf-core/metagenome
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Github : https://github.com/glebus-sasha/metagenome_nf
+----------------------------------------------------------------------------------------
+*/
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+include { MULTIQC                       } from './modules/nf-core/multiqc'
+include { FASTQ_TAXONOMY_PROD           } from './workflows/fastq_taxonomy_prod.nf'
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    RUN MAIN WORKFLOW
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    RUN MAIN WORKFLOW
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
 
 workflow {
     input_fastqs = Channel.fromPath("${params.reads}/*.[fq,fastq]*")
@@ -12,11 +37,9 @@ workflow {
         .groupTuple()
         .map { sampleName, files ->
             def isSingleEnd = files.size() == 1
-            
-            // Создаем формат как в nf-core: [метаданные, список_файлов]
-            [
+                        [
                 [id: sampleName, single_end: isSingleEnd],
-                files.sort()  // сортируем файлы для consistency
+                files.sort()
             ]
         }
 
@@ -68,17 +91,22 @@ workflow {
         FASTQ_TAXONOMY.out.gtdbtk
     )
     */
-
-    /*
-    REPORT(
-        FASTQ_TAXONOMY.out.fastqc.map{it[1]}                    |
-            mix(FASTQ_TAXONOMY.out.kreport.map{it[1]})          |
-            mix(FASTQ_TAXONOMY.out.kreport_contigs.map{it[1]})  |
-            mix(FASTQ_TAXONOMY.out.quast)                       |
-            mix(FASTQ_TAXONOMY.out.quast_bin)                   |
-            mix(FASTQ_TAXONOMY.out.metaphlan.map{it[1]})        |
-            mix(FASTQ_TAXONOMY.out.gtdbtk.map{it[1]})           |
-            collect
+    //
+    // MODULE: MultiQC
+    //
+    ch_multiqc_files = FASTQ_TAXONOMY_PROD.out.ch_multiqc_files.mix(FASTQ_TAXONOMY_PROD.out.ch_collated_versions)
+    MULTIQC (
+        ch_multiqc_files.collect(),
+        [],
+        [],
+        [],
+        [],
+        []
     )
-    */
 }
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    THE END
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/

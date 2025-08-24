@@ -24,7 +24,6 @@ include { ALPHA_DIV                     } from '../processes/alpha_div.nf'
 include { SAMPLE2MAKERS                 } from '../processes/sample2markers.nf'
 include { STRAINPHLAN                   } from '../processes/strainphlan.nf'
 
-
 workflow FASTQ_TAXONOMY_DEV { 
     take:
     input_fastqs
@@ -60,7 +59,7 @@ workflow FASTQ_TAXONOMY_DEV {
         flatMap       |
         QUAST_BIN & ANTISMASH
 
-    GTDBTK(METABAT2.out.bins, gtdbtk_db)*/
+    GTDBTK(METABAT2.out.bins, gtdbtk_db)
     KRAKEN2(TRIM.out.trimmed_reads, kraken2_db)
     KRAKEN2_CONTIGS(MEGAHIT.out.contigs, kraken2_db)
     METAPHLAN(TRIM.out.trimmed_reads, metaphlan_db)
