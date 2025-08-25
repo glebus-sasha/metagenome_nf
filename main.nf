@@ -15,12 +15,11 @@
 
 include { FASTQC                        } from './modules/nf-core/fastqc'
 include { FASTP                         } from './modules/nf-core/fastp'
+include { CAT_FASTQ                     } from './modules/nf-core/cat/fastq'
 include { KRAKEN2_KRAKEN2               } from './modules/nf-core/kraken2/kraken2'
 include { BRACKEN_BRACKEN               } from './modules/nf-core/bracken/bracken'
 include { KREPORT2MPA                   } from './modules/local/kreport2mpa'
 include { BRACKEN_RESULTS               } from './modules/local/bracken_results'
-include { METAPHLAN_METAPHLAN           } from './modules/nf-core/metaphlan/metaphlan'
-include { METAPHLAN_RESULTS             } from './modules/local/metaphlan_results'
 include { softwareVersionsToYAML        } from './subworkflows/nf-core/utils_nfcore_pipeline'
 include { MULTIQC                       } from './modules/nf-core/multiqc'
 
@@ -70,10 +69,54 @@ workflow {
     ch_multiqc_files = ch_multiqc_files.mix(FASTP.out.json.collect{it[1]})
     ch_versions = ch_versions.mix(FASTP.out.versions.first())
     //
+    // MODULE: Run cat fastq
+    //
+    ch_cat_fastq = FASTP.out.reads
+        // Обновляем ID по правилу 7 частей с конца
+        .map { tuple ->
+            def (meta, files) = tuple
+            def oldId = meta.id
+            
+            // Разбиваем старый ID по _
+            def parts = oldId.split('_')
+            
+            // Берем последние 7 частей (или меньше, если частей меньше 7)
+            def newId = parts.length >= 7 ? 
+                parts[-7..-1].join('_') : 
+                parts.join('_')
+            
+            // Создаем новый meta с обновленным ID
+            def newMeta = meta.clone()
+            newMeta.id = newId
+            
+            // Возвращаем tuple с новым meta и файлами
+            [newMeta, files]
+        }
+        
+        // Группируем по новому ID (для мержинга)
+        .groupTuple(by: [0])
+        
+        // Сортируем файлы внутри каждой группы для правильного порядка
+        .map { tuple ->
+            def (meta, filesList) = tuple
+            
+            // filesList - это список списков файлов, flatten делаем его плоским
+            def allFiles = filesList.flatten()
+            
+            // Сортируем файлы для правильного порядка (R1, R2, R1, R2, ...)
+            def sortedFiles = allFiles.sort()
+            
+            [meta, sortedFiles]
+        }
+    CAT_FASTQ (
+        ch_cat_fastq
+    )
+    ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first())
+    //
     // MODULE: Run Kraken2
     //
     KRAKEN2_KRAKEN2 (
-        FASTP.out.reads,
+        CAT_FASTQ.out.reads,
         kraken2_db,
         false,
         false
