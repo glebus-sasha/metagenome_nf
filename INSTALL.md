@@ -11,6 +11,8 @@ wget -c https://genome-idx.s3.amazonaws.com/kraken/k2_standard_20250714.tar.gz
 wget -c https://data.gtdb.ecogenomic.org/releases/release226/226.0/auxillary_files/gtdbtk_package/full_package/gtdbtk_r226_data.tar.gz
 ```
 
+Install nextflow and apptainer
+
 make file path_config.py inside metagenome_nf folder
 ```
 nano path_config.py
