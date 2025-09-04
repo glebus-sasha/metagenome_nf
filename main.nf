@@ -20,6 +20,7 @@ include { KRAKEN2_KRAKEN2               } from './modules/nf-core/kraken2/kraken
 include { BRACKEN_BRACKEN               } from './modules/nf-core/bracken/bracken'
 include { KREPORT2MPA                   } from './modules/local/kreport2mpa'
 include { BRACKEN_RESULTS               } from './modules/local/bracken_results'
+include { TAX_METRICS                   } from './modules/local/tax_metrics'
 include { softwareVersionsToYAML        } from './subworkflows/nf-core/utils_nfcore_pipeline'
 include { MULTIQC                       } from './modules/nf-core/multiqc'
 
@@ -146,6 +147,13 @@ workflow {
         KREPORT2MPA.out.csv
     )
     ch_versions = ch_versions.mix(BRACKEN_RESULTS.out.versions.first())
+    //
+    // MODULE: Run tax metrics
+    //
+    TAX_METRICS (
+        BRACKEN_RESULTS.out.csv
+    )
+    ch_versions = ch_versions.mix(TAX_METRICS.out.versions.first())
     //
     // Collate and save software versions
     //
