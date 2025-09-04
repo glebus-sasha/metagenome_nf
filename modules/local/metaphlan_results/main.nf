@@ -1,6 +1,6 @@
 process METAPHLAN_RESULTS {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_low'
 
     conda "${moduleDir}/environment.yml"
     container 'glebussasha/tax_metrics:latest'
@@ -22,7 +22,7 @@ process METAPHLAN_RESULTS {
     metaphlan_results \\
         $metaphlan_file \\
         ${prefix}_taxonomy.csv \\
-        $args
+        $args 
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

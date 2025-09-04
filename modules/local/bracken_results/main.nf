@@ -1,6 +1,6 @@
 process BRACKEN_RESULTS {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_low'
 
     conda "${moduleDir}/environment.yml"
     container 'glebussasha/tax_metrics:latest'

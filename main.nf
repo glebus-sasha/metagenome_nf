@@ -18,6 +18,7 @@ include { FASTP                         } from './modules/nf-core/fastp'
 include { CAT_FASTQ                     } from './modules/nf-core/cat/fastq'
 include { METAPHLAN_METAPHLAN           } from './modules/nf-core/metaphlan/metaphlan'
 include { METAPHLAN_RESULTS             } from './modules/local/metaphlan_results'
+include { TAX_METRICS                   } from './modules/local/tax_metrics'
 include { softwareVersionsToYAML        } from './subworkflows/nf-core/utils_nfcore_pipeline'
 include { MULTIQC                       } from './modules/nf-core/multiqc'
 
@@ -127,6 +128,13 @@ workflow {
         METAPHLAN_METAPHLAN.out.profile
     )
     ch_versions = ch_versions.mix(METAPHLAN_RESULTS.out.versions.first())
+    //
+    // MODULE: Run tax metrics
+    //
+    TAX_METRICS (
+        METAPHLAN_RESULTS.out.csv
+    )
+    ch_versions = ch_versions.mix(TAX_METRICS.out.versions.first())
     //
     // Collate and save software versions
     //

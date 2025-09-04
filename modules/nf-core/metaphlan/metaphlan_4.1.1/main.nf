@@ -1,11 +1,11 @@
 process METAPHLAN_METAPHLAN {
     tag "${meta.id}"
-    label 'process_high'
+    label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? 'https://depot.galaxyproject.org/singularity/metaphlan:4.2.2--pyhdfd78af_0'
-        : 'biocontainers/metaphlan:4.2.2--pyhdfd78af_0'}"
+        ? 'https://depot.galaxyproject.org/singularity/metaphlan:4.1.1--pyhdfd78af_0'
+        : 'biocontainers/metaphlan:4.1.1--pyhdfd78af_0'}"
 
     input:
     tuple val(meta), path(input)
@@ -14,6 +14,7 @@ process METAPHLAN_METAPHLAN {
 
     output:
     tuple val(meta), path("*_profile.txt"), emit: profile
+    tuple val(meta), path("*.biom"), emit: biom
     tuple val(meta), path('*.bowtie2out.txt'), optional: true, emit: bt2out
     tuple val(meta), path("*.sam"), optional: true, emit: sam
     path "versions.yml", emit: versions
@@ -26,7 +27,7 @@ process METAPHLAN_METAPHLAN {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def input_type = "${input}" =~ /.*\.(fastq|fq)/ ? "--input_type fastq" : "${input}" =~ /.*\.(fasta|fna|fa)/ ? "--input_type fasta" : "${input}".endsWith(".bowtie2out.txt") ? "--input_type bowtie2out" : "--input_type sam"
     def input_data = ("${input_type}".contains("fastq")) && !meta.single_end ? "${input[0]},${input[1]}" : "${input}"
-    def bowtie2_out = "${input_type}" == "--input_type mapout" || "${input_type}" == "--input_type sam" ? '' : "--mapout ${prefix}.bowtie2out.txt"
+    def bowtie2_out = "${input_type}" == "--input_type bowtie2out" || "${input_type}" == "--input_type sam" ? '' : "--bowtie2out ${prefix}.bowtie2out.txt"
     def samfile_out = save_samfile ? "-s ${prefix}.sam" : ''
     """
     BT2_DB=`find -L "${metaphlan_db_latest}" -name "*rev.1.bt2*" -exec dirname {} \\;`
@@ -39,8 +40,9 @@ process METAPHLAN_METAPHLAN {
         ${args} \\
         ${bowtie2_out} \\
         ${samfile_out} \\
-        --db_dir \$BT2_DB \\
+        --bowtie2db \$BT2_DB \\
         --index \$BT2_DB_INDEX \\
+        --biom ${prefix}.biom \\
         --output_file ${prefix}_profile.txt
 
     cat <<-END_VERSIONS > versions.yml
@@ -54,6 +56,7 @@ process METAPHLAN_METAPHLAN {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     echo "${args}"
+    touch ${prefix}.biom
     touch ${prefix}_profile.txt
 
     cat <<-END_VERSIONS > versions.yml

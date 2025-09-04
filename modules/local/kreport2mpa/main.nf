@@ -1,6 +1,6 @@
 process KREPORT2MPA {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_low'
 
     conda "${moduleDir}/environment.yml"
     container 'biocontainers/krakentools:1.2.1--pyh7e72e81_0'
