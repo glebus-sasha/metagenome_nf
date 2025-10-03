@@ -13,14 +13,16 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { FASTQC                        } from './modules/nf-core/fastqc'
-include { FASTP                         } from './modules/nf-core/fastp'
-include { CAT_FASTQ                     } from './modules/nf-core/cat/fastq'
-include { METAPHLAN_METAPHLAN           } from './modules/nf-core/metaphlan/metaphlan'
-include { METAPHLAN_RESULTS             } from './modules/local/metaphlan_results'
-include { TAX_METRICS                   } from './modules/local/tax_metrics'
-include { softwareVersionsToYAML        } from './subworkflows/nf-core/utils_nfcore_pipeline'
-include { MULTIQC                       } from './modules/nf-core/multiqc'
+include { FASTQC                            } from './modules/nf-core/fastqc'
+include { FASTP                             } from './modules/nf-core/fastp'
+include { CAT_FASTQ                         } from './modules/nf-core/cat/fastq'
+include { METAPHLAN_METAPHLAN               } from './modules/nf-core/metaphlan/metaphlan'
+include { KRAKEN2_KRAKEN2                   } from './modules/nf-core/kraken2/kraken2'
+include { BRACKEN_BRACKEN                   } from './modules/nf-core/bracken/bracken'
+include { KRAKENUNIQ                        } from './modules/local/krakenuniq'
+include { TAXPASTA_STANDARDISE              } from './modules/nf-core/taxpasta/standardise'
+include { softwareVersionsToYAML            } from './subworkflows/nf-core/utils_nfcore_pipeline'
+include { MULTIQC                           } from './modules/nf-core/multiqc'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,6 +46,9 @@ workflow {
         }
 
     metaphlan_db        = Channel.fromPath("${params.metaphlan_db}").collect()
+    kraken2_db          = Channel.fromPath("${params.kraken2_db}").collect()
+    krakenuniq_db       = Channel.fromPath("${params.krakenuniq_db}").collect()
+    ncbi_taxdump        = Channel.fromPath("${params.ncbi_taxdump}").collect()
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
@@ -122,19 +127,47 @@ workflow {
     ch_multiqc_files = ch_multiqc_files.mix(METAPHLAN_METAPHLAN.out.profile.collect{it[1]})
     ch_versions = ch_versions.mix(METAPHLAN_METAPHLAN.out.versions.first())
     //
-    // MODULE: Run MetaPlAn results
+    // MODULE: Run Kraken 2
     //
-    METAPHLAN_RESULTS (
-        METAPHLAN_METAPHLAN.out.profile
+    KRAKEN2_KRAKEN2 (
+        CAT_FASTQ.out.reads,
+        kraken2_db,
+        false,
+        false
     )
-    ch_versions = ch_versions.mix(METAPHLAN_RESULTS.out.versions.first())
+    ch_multiqc_files = ch_multiqc_files.mix(KRAKEN2_KRAKEN2.out.report.collect{it[1]})
+    ch_versions = ch_versions.mix(KRAKEN2_KRAKEN2.out.versions.first())
     //
-    // MODULE: Run tax metrics
+    // MODULE: Run Bracken
     //
-    TAX_METRICS (
-        METAPHLAN_RESULTS.out.csv
+    BRACKEN_BRACKEN (
+        KRAKEN2_KRAKEN2.out.report,
+        kraken2_db
     )
-    ch_versions = ch_versions.mix(TAX_METRICS.out.versions.first())
+    ch_multiqc_files = ch_multiqc_files.mix(BRACKEN_BRACKEN.out.reports.collect{it[1]})
+    ch_versions = ch_versions.mix(BRACKEN_BRACKEN.out.versions.first())
+    //
+    // MODULE: Run KrakenUniq
+    //
+    KRAKENUNIQ (
+        CAT_FASTQ.out.reads,
+        'fastq',
+        krakenuniq_db,
+        false,
+        false,
+        false
+    )
+    ch_versions = ch_versions.mix(KRAKENUNIQ.out.versions.first())
+    //
+    // MODULE: Run TAXPASTA
+    //
+    TAXPASTA_STANDARDISE (
+        METAPHLAN_METAPHLAN.out.profile,
+        'metaphlan',
+        'tsv',
+        ncbi_taxdump
+    )
+    ch_versions = ch_versions.mix(KRAKENUNIQ.out.versions.first())
     //
     // Collate and save software versions
     //
