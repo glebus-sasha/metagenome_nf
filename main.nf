@@ -145,7 +145,6 @@ workflow {
             sort: true,
             newLine: true
         ).set { ch_collated_versions }
-
     //
     // MODULE: MultiQC
     //
