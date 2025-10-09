@@ -79,7 +79,7 @@ process KRAKENUNIQ {
             ${classified_option} \\
             --paired \\
             ${args2} \\
-            $input[0] $input[1]
+            $input
 
         ${compress_reads_command}
 
