@@ -22,7 +22,7 @@ process TAX_METRICS {
     tax_metrics \\
         $tax_file \\
         ${prefix}_metrics.json \\
-        $args
+        $args 
 
     cat <<-END_VERSIONS > versions.yml
         "${task.process}":

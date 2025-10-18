@@ -44,6 +44,7 @@ workflow {
         }
 
     metaphlan_db        = Channel.fromPath("${params.metaphlan_db}").collect()
+    ncbi_taxdump        = Channel.fromPath("${params.ncbi_taxdump}").collect()
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()

@@ -22,7 +22,7 @@ process METAPHLAN_RESULTS {
     metaphlan_results \\
         $metaphlan_file \\
         ${prefix}_taxonomy.csv \\
-        $args  
+        $args
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
