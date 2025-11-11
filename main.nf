@@ -176,7 +176,7 @@ workflow {
     // MODULE: Run TAXPASTA_STANDARDISE_METAPHLAN
     //
     TAXPASTA_STANDARDISE_BRACKEN (
-        BRACKEN_BRACKEN.out.reports,
+        BRACKEN_BRACKEN.out.txt,
         'bracken',
         'tsv',
         ncbi_taxdump
