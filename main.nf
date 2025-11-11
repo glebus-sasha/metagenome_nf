@@ -13,16 +13,18 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { FASTQC                            } from './modules/nf-core/fastqc'
-include { FASTP                             } from './modules/nf-core/fastp'
-include { CAT_FASTQ                         } from './modules/nf-core/cat/fastq'
-include { METAPHLAN_METAPHLAN               } from './modules/nf-core/metaphlan/metaphlan'
-include { KRAKEN2_KRAKEN2                   } from './modules/nf-core/kraken2/kraken2'
-include { BRACKEN_BRACKEN                   } from './modules/nf-core/bracken/bracken'
-include { KRAKENUNIQ                        } from './modules/local/krakenuniq'
-include { TAXPASTA_STANDARDISE              } from './modules/nf-core/taxpasta/standardise'
-include { softwareVersionsToYAML            } from './subworkflows/nf-core/utils_nfcore_pipeline'
-include { MULTIQC                           } from './modules/nf-core/multiqc'
+include { FASTQC                                                  } from './modules/nf-core/fastqc'
+include { FASTP                                                   } from './modules/nf-core/fastp'
+include { CAT_FASTQ                                               } from './modules/nf-core/cat/fastq'
+include { METAPHLAN_METAPHLAN                                     } from './modules/nf-core/metaphlan/metaphlan'
+include { KRAKEN2_KRAKEN2                                         } from './modules/nf-core/kraken2/kraken2'
+include { BRACKEN_BRACKEN                                         } from './modules/nf-core/bracken/bracken'
+include { KRAKENUNIQ                                              } from './modules/local/krakenuniq'
+include { TAXPASTA_STANDARDISE as TAXPASTA_STANDARDISE_METAPHLAN  } from './modules/nf-core/taxpasta/standardise'
+include { TAXPASTA_STANDARDISE as TAXPASTA_STANDARDISE_BRACKEN    } from './modules/nf-core/taxpasta/standardise'
+include { TAXPASTA_STANDARDISE as TAXPASTA_STANDARDISE_KRAKENUNIQ } from './modules/nf-core/taxpasta/standardise'
+include { softwareVersionsToYAML                                  } from './subworkflows/nf-core/utils_nfcore_pipeline'
+include { MULTIQC                                                 } from './modules/nf-core/multiqc'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -161,15 +163,24 @@ workflow {
     ch_versions = ch_versions.mix(KRAKENUNIQ.out.versions.first())
 */
     //
-    // MODULE: Run TAXPASTA
+    // MODULE: Run TAXPASTA_STANDARDISE_METAPHLAN
     //
-    TAXPASTA_STANDARDISE (
+    TAXPASTA_STANDARDISE_METAPHLAN (
         METAPHLAN_METAPHLAN.out.profile,
         'metaphlan',
         'tsv',
         ncbi_taxdump
     )
-    ch_versions = ch_versions.mix(TAXPASTA_STANDARDISE.out.versions.first())
+    ch_versions = ch_versions.mix(TAXPASTA_STANDARDISE_METAPHLAN.out.versions.first())
+    //
+    // MODULE: Run TAXPASTA_STANDARDISE_METAPHLAN
+    //
+    TAXPASTA_STANDARDISE_BRACKEN (
+        BRACKEN_BRACKEN.out.reports,
+        'bracken',
+        'tsv',
+        ncbi_taxdump
+    )
     //
     // Collate and save software versions
     //
