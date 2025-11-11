@@ -146,6 +146,7 @@ workflow {
     )
     ch_multiqc_files = ch_multiqc_files.mix(BRACKEN_BRACKEN.out.reports.collect{it[1]})
     ch_versions = ch_versions.mix(BRACKEN_BRACKEN.out.versions.first())
+/*
     //
     // MODULE: Run KrakenUniq
     //
@@ -158,6 +159,7 @@ workflow {
         false
     )
     ch_versions = ch_versions.mix(KRAKENUNIQ.out.versions.first())
+*/
     //
     // MODULE: Run TAXPASTA
     //
