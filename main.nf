@@ -169,7 +169,7 @@ workflow {
         'tsv',
         ncbi_taxdump
     )
-    ch_versions = ch_versions.mix(KRAKENUNIQ.out.versions.first())
+    ch_versions = ch_versions.mix(TAXPASTA_STANDARDISE.out.versions.first())
     //
     // Collate and save software versions
     //
