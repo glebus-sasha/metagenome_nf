@@ -33,7 +33,7 @@ include { MULTIQC                                                 } from './modu
 */
 
 workflow {
-    input_fastqs = Channel.fromPath("${params.reads}/*.[fq,fastq]*")
+    input_fastqs = channel.fromPath("${params.reads}/*.[fq,fastq]*")
         .map { file ->
             def sampleName = file.simpleName.replaceFirst(/_[rR][12]$/, '')
             [sampleName, file]
@@ -47,13 +47,13 @@ workflow {
             ]
         }
 
-    metaphlan_db        = Channel.fromPath("${params.metaphlan_db}").collect()
-    kraken2_db          = Channel.fromPath("${params.kraken2_db}").collect()
-    krakenuniq_db       = Channel.fromPath("${params.krakenuniq_db}").collect()
-    ncbi_taxdump        = Channel.fromPath("${params.ncbi_taxdump}").collect()
+    metaphlan_db        = channel.fromPath("${params.metaphlan_db}").collect()
+    kraken2_db          = channel.fromPath("${params.kraken2_db}").collect()
+    krakenuniq_db       = channel.fromPath("${params.krakenuniq_db}").collect()
+    ncbi_taxdump        = channel.fromPath("${params.ncbi_taxdump}").collect()
 
-    ch_versions = Channel.empty()
-    ch_multiqc_files = Channel.empty()
+    ch_versions = channel.empty()
+    ch_multiqc_files = channel.empty()
     //
     // MODULE: Run FastQC
     //
@@ -173,7 +173,7 @@ workflow {
     )
     ch_versions = ch_versions.mix(TAXPASTA_STANDARDISE_METAPHLAN.out.versions.first())
     //
-    // MODULE: Run TAXPASTA_STANDARDISE_METAPHLAN
+    // MODULE: Run TAXPASTA_STANDARDISE_BRACKEN
     //
     TAXPASTA_STANDARDISE_BRACKEN (
         BRACKEN_BRACKEN.out.reports,
