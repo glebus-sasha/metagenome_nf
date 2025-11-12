@@ -186,7 +186,7 @@ workflow {
     // MODULE: Run merging after standardisation
     //
     TAXPASTA_MERGE (
-        METAPHLAN_METAPHLAN.out.profile,
+        TAXPASTA_STANDARDISE_METAPHLAN.out.standardised_profile.collect(),
         'metaphlan',
         'csv',
         ncbi_taxdump,
