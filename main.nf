@@ -168,7 +168,7 @@ workflow {
     TAXPASTA_STANDARDISE_METAPHLAN (
         METAPHLAN_METAPHLAN.out.profile,
         'metaphlan',
-        'tsv',
+        'csv',
         ncbi_taxdump
     )
     ch_versions = ch_versions.mix(TAXPASTA_STANDARDISE_METAPHLAN.out.versions.first())
@@ -178,7 +178,7 @@ workflow {
     TAXPASTA_STANDARDISE_BRACKEN (
         BRACKEN_BRACKEN.out.reports,
         'bracken',
-        'tsv',
+        'csv',
         ncbi_taxdump
     )
     //
