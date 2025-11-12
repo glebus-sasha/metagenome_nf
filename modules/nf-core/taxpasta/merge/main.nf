@@ -1,20 +1,22 @@
-process TAXPASTA_STANDARDISE {
+process TAXPASTA_MERGE {
     tag "$meta.id"
-    label 'process_high'
+    label 'process_single'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/taxpasta:0.7.0--pyhdfd78af_0':
         'biocontainers/taxpasta:0.7.0--pyhdfd78af_0' }"
 
+
     input:
-    tuple val(meta), path(profile)
+    tuple val(meta), path(profiles)
     val profiler
     val format
     path taxonomy
+    path samplesheet
 
     output:
-    tuple val(meta), path("*.{tsv,csv,arrow,parquet,biom}"), emit: standardised_profile
+    tuple val(meta), path("*.{tsv,csv,arrow,parquet,biom}"), emit: merged_profiles
     path "versions.yml"                                    , emit: versions
 
     when:
@@ -24,13 +26,16 @@ process TAXPASTA_STANDARDISE {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def taxonomy_option = taxonomy ? "--taxonomy ${taxonomy}" : ''
+    def samplesheet_input = samplesheet ? "-s ${samplesheet}" : ''
     """
-    taxpasta standardise \\
+    taxpasta merge \\
         --profiler $profiler \\
         --output ${prefix}.${format} \\
         $args \\
         $taxonomy_option \\
-        $profile 
+        $samplesheet_input \\
+        $profiles
+
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -39,7 +44,10 @@ process TAXPASTA_STANDARDISE {
     """
 
     stub:
+    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def taxonomy_option = taxonomy ? "--taxonomy ${taxonomy}" : ''
+    def samplesheet_input = samplesheet ? "-s ${samplesheet}" : ''
     """
     touch ${prefix}.${format}
 

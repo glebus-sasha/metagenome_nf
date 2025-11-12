@@ -23,6 +23,7 @@ include { KRAKENUNIQ                                              } from './modu
 include { TAXPASTA_STANDARDISE as TAXPASTA_STANDARDISE_METAPHLAN  } from './modules/nf-core/taxpasta/standardise'
 include { TAXPASTA_STANDARDISE as TAXPASTA_STANDARDISE_BRACKEN    } from './modules/nf-core/taxpasta/standardise'
 include { TAXPASTA_STANDARDISE as TAXPASTA_STANDARDISE_KRAKENUNIQ } from './modules/nf-core/taxpasta/standardise'
+include { TAXPASTA_MERGE                                          } from './modules/nf-core/taxpasta/merge'
 include { softwareVersionsToYAML                                  } from './subworkflows/nf-core/utils_nfcore_pipeline'
 include { MULTIQC                                                 } from './modules/nf-core/multiqc'
 
@@ -181,6 +182,17 @@ workflow {
         'csv',
         ncbi_taxdump
     )
+    //
+    // MODULE: Run merging after standardisation
+    //
+    TAXPASTA_MERGE (
+        METAPHLAN_METAPHLAN.out.profile,
+        'metaphlan',
+        'csv',
+        ncbi_taxdump,
+        []
+    )
+    ch_versions = ch_versions.mix(TAXPASTA_MERGE.out.versions.first())
     //
     // Collate and save software versions
     //
