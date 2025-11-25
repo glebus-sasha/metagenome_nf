@@ -16,6 +16,7 @@ process METAPHLAN_METAPHLAN {
     tuple val(meta), path("*_profile.txt"), emit: profile
     tuple val(meta), path('*.bowtie2out.txt'), optional: true, emit: bt2out
     tuple val(meta), path("*.sam"), optional: true, emit: sam
+    tuple val(meta), path("*_mp3_viruses.csv"), optional: true, emit: mp3_viruses
     path "versions.yml", emit: versions
 
     when:
@@ -39,9 +40,12 @@ process METAPHLAN_METAPHLAN {
         ${args} \\
         ${bowtie2_out} \\
         ${samfile_out} \\
+        --profile_vsc \\
         --db_dir \$BT2_DB \\
         --index \$BT2_DB_INDEX \\
         --output_file ${prefix}_profile.txt
+    
+    mv mp3_viruses.csv ${prefix}_mp3_viruses.csv || true
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

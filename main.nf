@@ -20,10 +20,9 @@ include { METAPHLAN_METAPHLAN                                     } from './modu
 include { KRAKEN2_KRAKEN2                                         } from './modules/nf-core/kraken2/kraken2'
 include { BRACKEN_BRACKEN                                         } from './modules/nf-core/bracken/bracken'
 include { KRAKENUNIQ                                              } from './modules/local/krakenuniq'
-include { TAXPASTA_STANDARDISE as TAXPASTA_STANDARDISE_METAPHLAN  } from './modules/nf-core/taxpasta/standardise'
-include { TAXPASTA_STANDARDISE as TAXPASTA_STANDARDISE_BRACKEN    } from './modules/nf-core/taxpasta/standardise'
-include { TAXPASTA_STANDARDISE as TAXPASTA_STANDARDISE_KRAKENUNIQ } from './modules/nf-core/taxpasta/standardise'
-include { TAXPASTA_MERGE                                          } from './modules/nf-core/taxpasta/merge'
+include { TAXPASTA_MERGE as TAXPASTA_MERGE_METAPHLAN              } from './modules/nf-core/taxpasta/merge'
+include { TAXPASTA_MERGE as TAXPASTA_MERGE_BRACKEN                } from './modules/nf-core/taxpasta/merge'
+include { TAXPASTA_MERGE as TAXPASTA_MERGE_KRAKENUNIQ             } from './modules/nf-core/taxpasta/merge'
 include { softwareVersionsToYAML                                  } from './subworkflows/nf-core/utils_nfcore_pipeline'
 include { MULTIQC                                                 } from './modules/nf-core/multiqc'
 
@@ -52,6 +51,8 @@ workflow {
     kraken2_db          = channel.fromPath("${params.kraken2_db}").collect()
     krakenuniq_db       = channel.fromPath("${params.krakenuniq_db}").collect()
     ncbi_taxdump        = channel.fromPath("${params.ncbi_taxdump}").collect()
+    multiqc_config = channel.value(params.multiqc_config)
+    multiqc_logo   = channel.value(params.multiqc_logo)
 
     ch_versions = channel.empty()
     ch_multiqc_files = channel.empty()
@@ -125,7 +126,7 @@ workflow {
     METAPHLAN_METAPHLAN (
         CAT_FASTQ.out.reads,
         metaphlan_db,
-        false
+        true
     )
     ch_multiqc_files = ch_multiqc_files.mix(METAPHLAN_METAPHLAN.out.profile.collect{it[1]})
     ch_versions = ch_versions.mix(METAPHLAN_METAPHLAN.out.versions.first())
@@ -164,35 +165,34 @@ workflow {
     ch_versions = ch_versions.mix(KRAKENUNIQ.out.versions.first())
 */
     //
-    // MODULE: Run TAXPASTA_STANDARDISE_METAPHLAN
+    // MODULE: Run merging after metaphlan
     //
-    TAXPASTA_STANDARDISE_METAPHLAN (
-        METAPHLAN_METAPHLAN.out.profile,
+    ch_profiles = METAPHLAN_METAPHLAN.out.profile
+        .map { it -> it[1] }
+        .collect()
+        .map { it -> [ [id: 'metaphlan'], it] }
+    TAXPASTA_MERGE_METAPHLAN (
+        ch_profiles,
         'metaphlan',
-        'csv',
-        ncbi_taxdump
-    )
-    ch_versions = ch_versions.mix(TAXPASTA_STANDARDISE_METAPHLAN.out.versions.first())
-    //
-    // MODULE: Run TAXPASTA_STANDARDISE_BRACKEN
-    //
-    TAXPASTA_STANDARDISE_BRACKEN (
-        BRACKEN_BRACKEN.out.reports,
-        'bracken',
-        'csv',
-        ncbi_taxdump
-    )
-    //
-    // MODULE: Run merging after standardisation
-    //
-    TAXPASTA_MERGE (
-        TAXPASTA_STANDARDISE_METAPHLAN.out.standardised_profile.collect(),
-        'metaphlan',
-        'csv',
+        'tsv',
         ncbi_taxdump,
         []
     )
-    ch_versions = ch_versions.mix(TAXPASTA_MERGE.out.versions.first())
+    ch_versions = ch_versions.mix(TAXPASTA_MERGE_METAPHLAN.out.versions)
+    //
+    // MODULE: Run merging after bracken
+    //
+    ch_profiles = BRACKEN_BRACKEN.out.reports
+        .map { it -> it[1] }
+        .collect()
+        .map { it -> [ [id: 'bracken'], it] }
+    TAXPASTA_MERGE_BRACKEN (
+        ch_profiles,
+        'bracken',
+        'tsv',
+        ncbi_taxdump,
+        []
+    )
     //
     // Collate and save software versions
     //
@@ -209,9 +209,9 @@ workflow {
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
     MULTIQC (
         ch_multiqc_files.collect(),
+        multiqc_config,
         [],
-        [],
-        [],
+        multiqc_logo,
         [],
         []
     )
