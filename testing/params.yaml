@@ -1,0 +1,9 @@
+outdir               : results
+reads                : /mnt/sdb1/aglebus/data/test
+kraken2_db           : /mnt/sdb1/aglebus/db/kraken2_db 
+metaphlan_db         : /mnt/sdb1/aglebus/db/metaphlan_db
+krakenuniq_db        : /mnt/sdb1/aglebus/db/krakenuniq
+list_of_organisms    : /mnt/sdb1/aglebus/data/list_of_organisms.csv
+taxonomy_names       : /mnt/sdb1/aglebus/db/taxdump/names.dmp
+taxonomy_nodes       : /mnt/sdb1/aglebus/db/taxdump/names.dmp
+accession2taxid      : /mnt/sdb1/aglebus/db/taxdump/nucl_gb.accession2taxid

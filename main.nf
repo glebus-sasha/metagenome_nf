@@ -12,15 +12,15 @@
     IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-
-include { FASTQC                        } from './modules/nf-core/fastqc'
-include { FASTP                         } from './modules/nf-core/fastp'
-include { CAT_FASTQ                     } from './modules/nf-core/cat/fastq'
-include { METAPHLAN_METAPHLAN           } from './modules/nf-core/metaphlan/metaphlan'
-include { METAPHLAN_RESULTS             } from './modules/local/metaphlan_results'
-include { TAX_METRICS                   } from './modules/local/tax_metrics'
-include { softwareVersionsToYAML        } from './subworkflows/nf-core/utils_nfcore_pipeline'
-include { MULTIQC                       } from './modules/nf-core/multiqc'
+include { DOWNLOAD_FASTA_CREATE_KRAKEN_DB   } from './subworkflows/local/download_fasta_create_kracken_db'
+include { FASTQC                            } from './modules/nf-core/fastqc'
+include { FASTP                             } from './modules/nf-core/fastp'
+include { CAT_FASTQ                         } from './modules/nf-core/cat/fastq'
+include { METAPHLAN_METAPHLAN               } from './modules/nf-core/metaphlan/metaphlan'
+include { METAPHLAN_RESULTS                 } from './modules/local/metaphlan_results'
+include { TAX_METRICS                       } from './modules/local/tax_metrics'
+include { softwareVersionsToYAML            } from './subworkflows/nf-core/utils_nfcore_pipeline'
+include { MULTIQC                           } from './modules/nf-core/multiqc'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,9 +44,25 @@ workflow {
         }
 
     metaphlan_db        = Channel.fromPath("${params.metaphlan_db}").collect()
+    list_of_organisms   = Channel.fromPath("${params.list_of_organisms}").collect()
+    taxonomy_names = Channel.fromPath("${params.taxonomy_names}").collect()
+    taxonomy_nodes = Channel.fromPath("${params.taxonomy_nodes}").collect()
+    accession2taxid = Channel.fromPath("${params.accession2taxid}").collect()
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
+
+    //
+    // MODULE: Run subworkflow to download fasta and create kraken db
+    //
+    DOWNLOAD_FASTA_CREATE_KRAKEN_DB (
+        list_of_organisms,
+        taxonomy_names,
+        taxonomy_nodes,
+        accession2taxid,
+        []
+    )
+/*
     //
     // MODULE: Run FastQC
     //
@@ -157,6 +173,7 @@ workflow {
         [],
         []
     )
+*/
 }
 
 /*

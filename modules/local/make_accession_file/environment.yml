@@ -1,0 +1,9 @@
+name: make_accession_file
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bash                  # минимально нужен для echo и работы скрипта
+  - coreutils             # стандартные утилиты (echo, cat, touch)
+  - python=3.11           # если нужно для версии nf-core stub / версии
