@@ -1,25 +1,20 @@
 include { NCBIGENOMEDOWNLOAD                } from '../../../modules/nf-core/ncbigenomedownload/main'
 include { MAKE_ACCESSION_FILE               } from '../../../modules/local/make_accession_file/main'
-include { FASTA_BUILD_ADD_KRAKEN2_BRACKEN   } from '../../../subworkflows/nf-core/fasta_build_add_kraken2_bracken/main'
+include { FASTA_BUILD_ADD_KRAKEN2_BRACKEN   } from '../../../subworkflows/local/fasta_build_add_kraken2_bracken/main'
 include { GUNZIP                            } from '../../../modules/nf-core/gunzip/main'                                                                                             
 
 workflow DOWNLOAD_FASTA_CREATE_KRAKEN_DB {
 
     take:
     list_of_organisms
-    taxonomy_names
-    taxonomy_nodes
-    accession2taxid
-    custom_seqid2taxid
+    taxonomy
+    db_name
     
     main:
     ch_versions = channel.empty()
-
     ch_list_of_organisms = list_of_organisms
         .splitCsv(header: ['organism','ncbi_id','refseq_id'], skip: 1)
-        .map { it ->  it[0]}
-        .map { raw -> [ raw.organism, raw.refseq_id ] }
-
+        .map { raw -> [ [id: raw.organism], raw.refseq_id ] }
     //
     // MODULE: Run MAKE_ACCESSION_FILE to create accession file for NCBIGENOMEDOWNLOAD
     //
@@ -31,9 +26,11 @@ workflow DOWNLOAD_FASTA_CREATE_KRAKEN_DB {
     //
     // MODULE: Run NCBIGENOMEDOWNLOAD to download FASTA files from NCBI
     //
+    ch_meta         = ch_organism_file.map { it -> [id: it[0]] }
+    ch_accession    = ch_organism_file.map { it -> it[1] }
     NCBIGENOMEDOWNLOAD (
-        ch_organism_file.map { it -> [id: it[0]] },
-        ch_organism_file.map { it -> it[1] },
+        ch_meta,
+        ch_accession,
         [],
         'all'
     )
@@ -47,21 +44,22 @@ workflow DOWNLOAD_FASTA_CREATE_KRAKEN_DB {
     )
     ch_fasta = GUNZIP.out.gunzip
         .map { it -> it[1] }
+        .unique()
         .collect()
-        .map { it -> [[id: 'fake_id'], it] }
+        .map { it -> [[id: db_name], it] }
     ch_versions = ch_versions.mix(GUNZIP.out.versions)
     //
     // MODULE: Run FASTA_BUILD_ADD_KRAKEN2_BRACKEN to build Kraken2/Bracken database
     //
     FASTA_BUILD_ADD_KRAKEN2_BRACKEN (
         ch_fasta,
-        taxonomy_names,
-        taxonomy_nodes,
-        accession2taxid,
-        false,
-        custom_seqid2taxid,
-        true,
+        taxonomy
     )
-    ch_versions = ch_versions.mix(FASTA_BUILD_ADD_KRAKEN2_BRACKEN.out.versions)
+    ch_versions     = ch_versions.mix(FASTA_BUILD_ADD_KRAKEN2_BRACKEN.out.versions)
+    ch_kraken2_db   = FASTA_BUILD_ADD_KRAKEN2_BRACKEN.out.kraken2_db
+
+    emit:
+    kraken2_db = ch_kraken2_db
+    versions   = ch_versions
 
 }

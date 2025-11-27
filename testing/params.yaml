@@ -1,9 +1,17 @@
 outdir               : results
 reads                : /mnt/sdb1/aglebus/data/test
-kraken2_db           : /mnt/sdb1/aglebus/db/kraken2_db 
+kraken2_db           : /mnt/sdb1/aglebus/db/custom_kraken_db
 metaphlan_db         : /mnt/sdb1/aglebus/db/metaphlan_db
-krakenuniq_db        : /mnt/sdb1/aglebus/db/krakenuniq
-list_of_organisms    : /mnt/sdb1/aglebus/data/list_of_organisms.csv
+
+list_of_organisms    : /mnt/sdb1/aglebus/resources/Femoflor_list.csv
 taxonomy_names       : /mnt/sdb1/aglebus/db/taxdump/names.dmp
 taxonomy_nodes       : /mnt/sdb1/aglebus/db/taxdump/names.dmp
 accession2taxid      : /mnt/sdb1/aglebus/db/taxdump/nucl_gb.accession2taxid
+genomad_db           : /mnt/sdb1/aglebus/db/genomad_db
+taxonomy             : /mnt/sdb1/aglebus/db/taxdump
+db_name              : custom_kraken_db
+
+run_download         : false
+run_reads_kraken     : false
+run_contigs_kraken   : true
+run_virus_taxonomy   : true

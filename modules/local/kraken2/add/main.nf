@@ -1,0 +1,50 @@
+process KRAKEN2_ADD {
+    tag "${meta.id}"
+    label 'process_medium'
+
+    conda "${moduleDir}/environment.yml"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0f/0f827dcea51be6b5c32255167caa2dfb65607caecdc8b067abd6b71c267e2e82/data'
+        : 'community.wave.seqera.io/library/kraken2_coreutils_pigz:920ecc6b96e2ba71'}"
+
+    input:
+    tuple val(meta), path(fasta)
+    path taxonomy, stageAs: 'taxonomy'
+
+    output:
+    tuple val(meta), path("${prefix}"), emit: kraken2_db
+    path "versions.yml"               , emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
+
+    script:
+    def args = task.ext.args ?: ''
+    prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    mkdir -p ${prefix}
+    cp -r "taxonomy" ${prefix}
+    for f in *.fna; do
+        kraken2-build --add-to-library "\$f" --db $prefix
+    done
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        kraken2: \$(echo \$(kraken2 --version 2>&1) | sed 's/^.*Kraken version //; s/ .*\$//')
+    END_VERSIONS
+    """
+
+    stub:
+    def args = task.ext.args ?: ''
+    prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    echo "${args}"
+    mkdir -p "${prefix}"/library/added "${prefix}"/taxonomy
+    touch "${prefix}"/library/added/test.txt "${prefix}"/seqid2taxid.map "${prefix}"/taxonomy/{nodes,names}.dmp
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        kraken2: \$(echo \$(kraken2 --version 2>&1) | sed 's/^.*Kraken version //; s/ .*\$//')
+    END_VERSIONS
+    """
+}

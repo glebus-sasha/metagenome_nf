@@ -16,7 +16,7 @@ process MAKE_ACCESSION_FILE {
     task.ext.when == null || task.ext.when
 
     script:
-    def filename = "${meta}.txt"
+    def filename = "${meta.id}.txt"
     """
     echo "${refseq_id}" > ${filename}
 
