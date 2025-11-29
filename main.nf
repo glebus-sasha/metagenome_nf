@@ -14,6 +14,7 @@
 */
 include { DOWNLOAD_FASTA_CREATE_KRAKEN_DB                   } from './subworkflows/local/download_fasta_create_kracken_db'
 include { FASTQ_PREPARE                                     } from './subworkflows/local/fastq_prepare'
+include { SHORTREAD_HOSTREMOVAL                             } from './subworkflows/local/shortread_hostremoval'
 include { FASTQ_KRAKEN2_BRACKEN as BRACKEN_CUSTOM_READS     } from './subworkflows/local/fastq_kraken2_bracken'
 include { FASTQ_KRAKEN2_BRACKEN as BRACKEN_CUSTOM_CONTIGS   } from './subworkflows/local/fastq_kraken2_bracken'
 include { FASTQ_METAPHLAN                                   } from './subworkflows/local/fastq_metaphlan'
@@ -46,13 +47,16 @@ workflow {
                 files.sort()
             ]
         }
-    metaphlan_db        = channel.value(file(params.metaphlan_db))
-    kraken2_db          = channel.value(file(params.kraken2_db))
-    genomad_db          = channel.value(file(params.genomad_db))
+    metaphlan_db            = channel.value(file(params.metaphlan_db))
+    kraken2_db              = channel.value(file(params.kraken2_db))
+    genomad_db              = channel.value(file(params.genomad_db))
 
-    list_of_organisms   = channel.value(file(params.list_of_organisms))
-    taxonomy            = channel.value(file(params.taxonomy))
-    db_name             = params.db_name
+    list_of_organisms       = channel.value(file(params.list_of_organisms))
+    taxonomy                = channel.value(file(params.taxonomy))
+    db_name                 = params.db_name
+
+    host_reference          = channel.value(file(params.host_reference))
+    host_reference_index    = channel.value(file(params.host_reference_index))
 
     if( params.run_download ) {
         //
@@ -68,7 +72,6 @@ workflow {
     } else {
         log.info "⏭ skip DOWNLOAD_FASTA_CREATE_KRAKEN_DB"
     }
-
     //
     // SUBWORKFLOW: Run fastq prepare
     //
@@ -95,6 +98,21 @@ workflow {
         ch_metaphlan_results
     )
     ch_versions = ch_versions.mix(TAX_METRICS.out.versions.first())
+    if( params.run_hostremoval ) {
+        //
+        // SUBWORKFLOW: remove host reads
+        //
+        SHORTREAD_HOSTREMOVAL (
+            ch_reads,
+            host_reference,
+            host_reference_index
+        )
+        ch_versions         = ch_versions.mix(SHORTREAD_HOSTREMOVAL.out.versions.first())
+        ch_reads            = SHORTREAD_HOSTREMOVAL.out.reads
+        ch_multiqc_files    = ch_multiqc_files.mix(SHORTREAD_HOSTREMOVAL.out.mqc)
+    } else {
+        log.info "⏭ skip SHORTREAD_HOSTREMOVAL"
+    } 
     if( params.run_reads_kraken ) {
         //
         // SUBWORKFLOW: Run kraken2 and bracken

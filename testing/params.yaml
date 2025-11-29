@@ -10,8 +10,11 @@ accession2taxid      : /mnt/sdb1/aglebus/db/taxdump/nucl_gb.accession2taxid
 genomad_db           : /mnt/sdb1/aglebus/db/genomad_db
 taxonomy             : /mnt/sdb1/aglebus/db/taxdump
 db_name              : custom_kraken_db
+host_reference       : /mnt/sdb1/aglebus/reference/Homo_sapiens.GRCh38.dna.primary_assembly.fa
+host_reference_index : /mnt/sdb1/aglebus/reference/GRCh38_noalt_as
 
 run_download         : false
 run_reads_kraken     : false
 run_contigs_kraken   : true
-run_virus_taxonomy   : true
+run_virus_taxonomy   : false
+run_hostremoval      : true

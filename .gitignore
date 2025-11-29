@@ -2,6 +2,7 @@
 .nextflow*
 work
 data
+testing
 test
 results
 path_config.py
